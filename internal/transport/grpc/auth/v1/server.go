@@ -20,9 +20,7 @@ func NewAuthServer() auth_v1.AuthServer {
 
 func (a *authServer) Create(ctx context.Context, r *auth_v1.CreateRequest) (*auth_v1.CreateResponse, error) {
 
-	const op = "AuthServer.GreateRequest"
-
-	log.Printf("%s: input = %+v", op, r)
+	log.Printf("input = %+v", r)
 
 	return &auth_v1.CreateResponse{
 		Id: gofakeit.Int64(),
@@ -31,9 +29,7 @@ func (a *authServer) Create(ctx context.Context, r *auth_v1.CreateRequest) (*aut
 
 func (a *authServer) Get(ctx context.Context, r *auth_v1.GetRequest) (*auth_v1.GetResponse, error) {
 
-	const op = "AuthServer.GetRequest"
-
-	log.Printf("%s: user id = %d", op, r.GetId())
+	log.Printf("user id = %d", r.GetId())
 
 	return &auth_v1.GetResponse{
 		Id: r.GetId(),
@@ -48,18 +44,14 @@ func (a *authServer) Get(ctx context.Context, r *auth_v1.GetRequest) (*auth_v1.G
 
 func (a *authServer) Update(ctx context.Context, r *auth_v1.UpdateRequest) (*empty.Empty, error) {
 
-	const op = "AuthServer.UpdateRequest"
+	log.Printf("user id: %d", r.GetId())
 
-	log.Printf("%s: user id: %d", op, r.GetId())
-
-	return nil, nil
+	return &empty.Empty{}, nil
 }
 
 func (a *authServer) Delete(ctx context.Context, r *auth_v1.DeleteRequest) (*empty.Empty, error) {
 
-	const op = "AuthServer.DeleteRequest"
+	log.Printf("user id: %d", r.GetId())
 
-	log.Printf("%s: user id: %d", op, r.GetId())
-
-	return nil, nil
+	return &empty.Empty{}, nil
 }
