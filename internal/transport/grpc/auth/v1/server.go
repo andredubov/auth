@@ -41,7 +41,6 @@ func (a *authServer) Get(ctx context.Context, r *auth_v1.GetRequest) (*auth_v1.G
 }
 
 func (a *authServer) Update(ctx context.Context, r *auth_v1.UpdateRequest) (*empty.Empty, error) {
-
 	log.Printf("user id: %d", r.GetId())
 
 	return &empty.Empty{}, nil
