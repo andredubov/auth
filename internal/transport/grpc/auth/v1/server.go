@@ -19,7 +19,6 @@ func NewAuthServer() auth_v1.AuthServer {
 }
 
 func (a *authServer) Create(ctx context.Context, r *auth_v1.CreateRequest) (*auth_v1.CreateResponse, error) {
-
 	log.Printf("input = %+v", r)
 
 	return &auth_v1.CreateResponse{
