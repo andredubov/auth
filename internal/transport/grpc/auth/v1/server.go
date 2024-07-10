@@ -27,7 +27,6 @@ func (a *authServer) Create(ctx context.Context, r *auth_v1.CreateRequest) (*aut
 }
 
 func (a *authServer) Get(ctx context.Context, r *auth_v1.GetRequest) (*auth_v1.GetResponse, error) {
-
 	log.Printf("user id = %d", r.GetId())
 
 	return &auth_v1.GetResponse{
