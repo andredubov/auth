@@ -47,7 +47,6 @@ func (a *authServer) Update(ctx context.Context, r *auth_v1.UpdateRequest) (*emp
 }
 
 func (a *authServer) Delete(ctx context.Context, r *auth_v1.DeleteRequest) (*empty.Empty, error) {
-
 	log.Printf("user id: %d", r.GetId())
 
 	return &empty.Empty{}, nil
