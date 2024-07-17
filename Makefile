@@ -1,3 +1,5 @@
+.PHONY:
+.SILENT:
 
 LOCAL_BIN:=$(CURDIR)/bin
 
@@ -5,7 +7,7 @@ install-golangci-lint:
 	GOBIN=$(LOCAL_BIN) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.53.3
 
 lint:
-	./bin/golangci-lint run ./... --config .golangci.pipeline.yaml
+	$(LOCAL_BIN)/golangci-lint run ./... --config .golangci.pipeline.yaml
 
 install-deps:
 	GOBIN=$(LOCAL_BIN) go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
@@ -17,6 +19,7 @@ get-deps:
 	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	go get -u github.com/joho/godotenv
 	go get -u github.com/jackc/pgx/v4
+	go get -u github.com/Masterminds/squirrel
 
 generate:
 	make generate-auth-api
@@ -28,3 +31,9 @@ generate-auth-api:
 	--go-grpc_out=./pkg/auth/v1 --go-grpc_opt=paths=source_relative \
 	--plugin=protoc-gen-go-grpc=./bin/protoc-gen-go-grpc \
 	./api/auth/v1/auth.proto
+
+local-docker-compose-up:
+	docker compose --env-file ./local.env up -d --build postgres-local migrator-local auth-local
+
+prod-docker-compose-up:
+	docker compose --env-file ./prod.env up -d --build postgres-prod migrator-prod auth-prod
