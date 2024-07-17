@@ -1,0 +1,94 @@
+version: '3.3'
+
+volumes:
+  postgres_volume_local:
+  postgres_volume_prod:
+
+services:
+  auth-local:
+    image: auth_local
+    container_name: auth_local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - local.env
+    ports:
+      - ${GRPC_PORT}:${GRPC_PORT}
+    depends_on:
+      postgres-local:
+        condition: service_healthy
+
+  auth-prod:
+    image: auth_prod
+    container_name: auth_prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - prod.env
+    ports:
+      - ${GRPC_PORT}:${GRPC_PORT}
+    depends_on:
+      postgres-local:
+        condition: service_healthy
+
+  postgres-local:
+    image: postgres:14-alpine3.17
+    container_name: postgres_local
+    env_file:
+      - local.env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - postgres_volume_local:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -q -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+
+  postgres-prod:
+    image: postgres:14-alpine3.17
+    container_name: postgres_prod
+    env_file:
+      - prod.env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - postgres_volume_prod:/var/lib/postgresql/data    
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -q -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+
+  migrator-local:
+    image: migrator_local
+    container_name: migrator_local
+    build:
+      context: .
+      dockerfile: migration_local.Dockerfile
+    restart: on-failure
+    env_file:
+      - local.env
+
+  migrator-prod:
+    image: migrator_prod
+    container_name: migrator_prod
+    build:
+      context: .
+      dockerfile: migration_prod.Dockerfile
+    restart: on-failure
+    env_file:
+      - prod.env
