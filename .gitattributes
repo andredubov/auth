@@ -1,5 +1,5 @@
 * text=auto
 
 # Unix files (needs LF)
-*.sh eol=LF
-*.env eol=LF
+*.sh eol=lf
+*.env eol=lf
