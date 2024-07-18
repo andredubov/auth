@@ -10,7 +10,7 @@ RUN chmod +x /bin/goose
 
 WORKDIR /root
 
-COPY migrations ./migrations
+COPY migrations/*.sql ./migrations/
 COPY migration_local.sh .
 COPY local.env .
 

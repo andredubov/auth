@@ -15,7 +15,7 @@ CREATE TABLE users
     name       varchar(256) not null,
     email      varchar(256) not null unique,
     pass_hash  varchar,
-    role       int references roles (id) not null on delete cascade,
+    role       int references roles (id) on delete cascade not null,
     created_at timestamp not null default now(),
     updated_at timestamp
 );
