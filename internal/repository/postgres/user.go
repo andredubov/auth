@@ -102,18 +102,18 @@ func (u *usersRepository) Update(ctx context.Context, userInfo repository.Update
 		PlaceholderFormat(sq.Dollar)
 
 	if userInfo.Name != nil {
-		updateBuilder.Set("name", userInfo.Name)
+		updateBuilder = updateBuilder.Set("name", userInfo.Name)
 	}
 
 	if userInfo.Email != nil {
-		updateBuilder.Set("email", userInfo.Email)
+		updateBuilder = updateBuilder.Set("email", userInfo.Email)
 	}
 
 	if userInfo.UserRole != nil {
-		updateBuilder.Set("role", userInfo.UserRole)
+		updateBuilder = updateBuilder.Set("role", userInfo.UserRole)
 	}
 
-	updateBuilder.Set("updated_at", time.Now()).Where(sq.Eq{"id": userInfo.ID})
+	updateBuilder = updateBuilder.Set("updated_at", time.Now()).Where(sq.Eq{"id": userInfo.ID})
 
 	query, args, err := updateBuilder.ToSql()
 	if err != nil {
