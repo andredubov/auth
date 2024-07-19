@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"time"
 
@@ -69,16 +70,23 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository
 	}
 
 	row, user := u.pool.QueryRow(ctx, query, args...), repository.User{}
+	var updatedAt sql.NullTime
 
-	if err := row.Scan(
+	err = row.Scan(
 		&user.ID,
 		&user.Name,
 		&user.Email,
 		&user.PasswordHash,
 		&user.UserRole,
 		&user.CreatedAt,
-		&user.UpdatedAt,
-	); err != nil {
+		&updatedAt,
+	)
+
+	if updatedAt.Valid {
+		user.UpdatedAt = updatedAt.Time
+	}
+
+	if err != nil {
 		log.Printf("%s: %v", op, err)
 		return repository.User{}, err
 	}
