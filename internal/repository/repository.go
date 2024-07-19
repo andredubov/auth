@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"time"
 )
 
@@ -9,6 +10,10 @@ const (
 	UnknownRole = 0
 	UserRole    = 1
 	AdminRole   = 2
+)
+
+var (
+	ErrUserNotFound = errors.New("User not found")
 )
 
 type (

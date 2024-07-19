@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 	"time"
 
@@ -88,6 +89,11 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository
 
 	if err != nil {
 		log.Printf("%s: %v", op, err)
+
+		if errors.Is(err, sql.ErrNoRows) {
+			return repository.User{}, repository.ErrUserNotFound
+		}
+
 		return repository.User{}, err
 	}
 
