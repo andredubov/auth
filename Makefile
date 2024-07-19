@@ -33,7 +33,4 @@ generate-auth-api:
 	./api/auth/v1/auth.proto
 
 local-docker-compose-up:
-	docker compose --env-file ./local.env up -d --build postgres-local migrator-local auth-local
-
-prod-docker-compose-up:
-	docker compose --env-file ./prod.env up -d --build postgres-prod migrator-prod auth-prod
+	docker compose --env-file ./.env up -d --build postgres migrator auth
