@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"log"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -26,6 +27,8 @@ func NewUsersRepository(pool *pgxpool.Pool) repository.Users {
 
 // Create new user in the repository
 func (u *usersRepository) Create(ctx context.Context, name, email, password string, role int) (int64, error) {
+	const op = "usersRepository.Create"
+
 	insertBuilder := sq.Insert(usersTable).
 		PlaceholderFormat(sq.Dollar).
 		Columns("name", "email", "pass_hash", "role").
@@ -34,6 +37,7 @@ func (u *usersRepository) Create(ctx context.Context, name, email, password stri
 
 	query, args, err := insertBuilder.ToSql()
 	if err != nil {
+		log.Printf("%s: %v", op, err)
 		return 0, err
 	}
 
@@ -41,6 +45,7 @@ func (u *usersRepository) Create(ctx context.Context, name, email, password stri
 
 	err = u.pool.QueryRow(ctx, query, args...).Scan(&userID)
 	if err != nil {
+		log.Printf("%s: %v", op, err)
 		return 0, err
 	}
 
@@ -49,6 +54,8 @@ func (u *usersRepository) Create(ctx context.Context, name, email, password stri
 
 // Get a user by its email from the repository
 func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository.User, error) {
+	const op = "usersRepository.GetByID"
+
 	queryBuilder := sq.Select("id", "name", "email", "pass_hash", "role", "created_at", "updated_at").
 		From(usersTable).
 		PlaceholderFormat(sq.Dollar).
@@ -57,6 +64,7 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository
 
 	query, args, err := queryBuilder.ToSql()
 	if err != nil {
+		log.Printf("%s: %v", op, err)
 		return repository.User{}, err
 	}
 
@@ -71,6 +79,7 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	); err != nil {
+		log.Printf("%s: %v", op, err)
 		return repository.User{}, err
 	}
 
@@ -79,6 +88,8 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository
 
 // Update a user in the repository
 func (u *usersRepository) Update(ctx context.Context, userInfo repository.UpdateUserInfo) (int64, error) {
+	const op = "usersRepository.Update"
+
 	updateBuilder := sq.Update(usersTable).
 		PlaceholderFormat(sq.Dollar)
 
@@ -98,11 +109,13 @@ func (u *usersRepository) Update(ctx context.Context, userInfo repository.Update
 
 	query, args, err := updateBuilder.ToSql()
 	if err != nil {
+		log.Printf("%s: %v", op, err)
 		return 0, err
 	}
 
 	res, err := u.pool.Exec(ctx, query, args...)
 	if err != nil {
+		log.Printf("%s: %v", op, err)
 		return 0, err
 	}
 
@@ -111,17 +124,21 @@ func (u *usersRepository) Update(ctx context.Context, userInfo repository.Update
 
 // Delete a user from the repository
 func (u *usersRepository) Delete(ctx context.Context, userID int64) (int64, error) {
+	const op = "usersRepository.Delete"
+
 	deleteBuilder := sq.Delete(usersTable).
 		PlaceholderFormat(sq.Dollar).
 		Where(sq.Eq{"id": userID})
 
 	query, args, err := deleteBuilder.ToSql()
 	if err != nil {
+		log.Printf("%s: %v", op, err)
 		return 0, err
 	}
 
 	res, err := u.pool.Exec(ctx, query, args...)
 	if err != nil {
+		log.Printf("%s: %v", op, err)
 		return 0, err
 	}
 
