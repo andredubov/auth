@@ -70,7 +70,7 @@ func (a *authServer) Get(ctx context.Context, r *auth_v1.GetRequest) (*auth_v1.G
 
 func (a *authServer) Update(ctx context.Context, r *auth_v1.UpdateRequest) (*empty.Empty, error) {
 	updateUserInfo := repository.UpdateUserInfo{}
-	updateUserInfo.ID = r.GetInfo().Id
+	updateUserInfo.ID = r.GetId()
 
 	if r.GetInfo().GetName() != nil {
 		updateUserInfo.Name = &r.GetInfo().Name.Value
