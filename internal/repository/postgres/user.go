@@ -9,6 +9,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/andredubov/auth/internal/repository"
+	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -90,7 +91,7 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository
 	if err != nil {
 		log.Printf("%s: %v", op, err)
 
-		if errors.Is(err, sql.ErrNoRows) {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return repository.User{}, repository.ErrUserNotFound
 		}
 
