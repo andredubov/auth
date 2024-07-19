@@ -1,7 +1,7 @@
 package env
 
 import (
-	"errors"
+	"fmt"
 	"os"
 
 	"github.com/andredubov/auth/internal/config"
@@ -17,9 +17,11 @@ type authConfig struct {
 
 // NewAuthConfig returns an intance of authConfig struct
 func NewAuthConfig() (config.AuthConfing, error) {
+	const op = "env.NewAuthConfig"
+
 	passwordSalt := os.Getenv(passwordSaltEnvName)
 	if len(passwordSalt) == 0 {
-		return nil, errors.New("password salt enviroment variable not found")
+		return nil, fmt.Errorf("%s: %s", op, "password salt not found")
 	}
 
 	return &authConfig{
