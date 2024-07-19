@@ -1,33 +1,83 @@
 package env
 
 import (
-	"errors"
+	"fmt"
 	"os"
 
 	"github.com/andredubov/auth/internal/config"
 )
 
 const (
-	dsnEnvName = "PG_DSN"
+	hostEnvName     = "POSTGRES_HOST"
+	portEnvName     = "POSTGRES_PORT"
+	dbnameEnvName   = "POSTGRES_DB"
+	userEnvName     = "POSTGRES_USER"
+	passwordEnvName = "POSTGRES_PASSWORD"
+	sslmodeEnvName  = "POSTGRES_SSL_MODE"
 )
 
 type postgresConfig struct {
-	dsn string
+	host     string
+	port     string
+	dbname   string
+	user     string
+	password string
+	sslmode  string
 }
 
 // NewPostgresConfig returns an intance of postgresConfig struct
 func NewPostgresConfig() (config.PostgresConfig, error) {
-	dsn := os.Getenv(dsnEnvName)
-	if len(dsn) == 0 {
-		return nil, errors.New("pg dsn not found")
+	const op = "env.NewPostgresConfig"
+
+	host := os.Getenv(hostEnvName)
+	if len(host) == 0 {
+		return nil, fmt.Errorf("%s: %s", op, "postgres host not found")
+	}
+
+	port := os.Getenv(portEnvName)
+	if len(port) == 0 {
+		return nil, fmt.Errorf("%s: %s", op, "postgres port not found")
+	}
+
+	dbname := os.Getenv(dbnameEnvName)
+	if len(port) == 0 {
+		return nil, fmt.Errorf("%s: %s", op, "postgres database name not found")
+	}
+
+	user := os.Getenv(userEnvName)
+	if len(port) == 0 {
+		return nil, fmt.Errorf("%s: %s", op, "postgres user not found")
+	}
+
+	password := os.Getenv(passwordEnvName)
+	if len(port) == 0 {
+		return nil, fmt.Errorf("%s: %s", op, "postgres password not found")
+	}
+
+	sslmode := os.Getenv(sslmodeEnvName)
+	if len(port) == 0 {
+		return nil, fmt.Errorf("%s: %s", op, "postgres password not found")
 	}
 
 	return &postgresConfig{
-		dsn: dsn,
+		host:     host,
+		port:     port,
+		dbname:   dbname,
+		user:     user,
+		password: password,
+		sslmode:  sslmode,
 	}, nil
 }
 
 // DSN returns postgres database connecton string
 func (cfg *postgresConfig) DSN() string {
-	return cfg.dsn
+	return fmt.Sprintf(
+		"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
+		cfg.host,
+		cfg.port,
+		cfg.dbname,
+		cfg.user,
+		cfg.password,
+		cfg.sslmode,
+	)
 }
