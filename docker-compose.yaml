@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 volumes:
   postgres_volume:
 services:
@@ -21,6 +21,8 @@ services:
       timeout: 3s
       retries: 10
       start_period: 60s
+    networks:
+      - authNet
   auth:
     image: auth
     container_name: auth
@@ -36,6 +38,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - authNet
   migrator:
     image: migrator
     container_name: migrator
@@ -50,3 +54,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - authNet
+  networks:
+    authNet:
+      driver: bridge
