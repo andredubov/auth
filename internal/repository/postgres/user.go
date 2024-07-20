@@ -14,7 +14,10 @@ import (
 )
 
 const (
-	usersTable = "users"
+	usersTable  = "users"
+	unknownRole = 0
+	userRole    = 1
+	adminRole   = 2
 )
 
 type usersRepository struct {
