@@ -110,7 +110,7 @@ jobs:
 
             # Create .env file
             mkdir -p ./auth/config
-            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ./auth/config/.env
+            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" > ./auth/config/.env
             echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ./auth/config/.env
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./auth/config/.env
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ./auth/config/.env
