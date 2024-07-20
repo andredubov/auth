@@ -121,10 +121,11 @@ jobs:
             echo "PASSWORD_SALT=${{ secrets.PASSWORD_SALT }}" >> ./auth/config/.env
 
             # Login into DockerHub
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+            # echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_TOKEN }} --password-stdin
 
             # Run a new container from a new image
             cd ./auth
+            pwd && ls -la
             docker-compose --env-file ./config/.env stop
             docker-compose --env-file ./config/.env rm -f
             docker-compose --env-file ./config/.env build auth migrator 
