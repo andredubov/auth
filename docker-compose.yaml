@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.9'
 volumes:
   postgres_volume:
 services:
@@ -22,13 +22,13 @@ services:
       retries: 10
       start_period: 60s
     networks:
-      - authNet
+      - authnet
   auth:
     image: auth
     container_name: auth
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: auth.Dockerfile
     env_file:
       - ./config/.env
     environment:
@@ -39,7 +39,8 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - authNet
+      authnet:
+        ipv4_address: 172.19.0.4
   migrator:
     image: migrator
     container_name: migrator
@@ -55,7 +56,11 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - authNet
-  networks:
-    authNet:
-      driver: bridge
+      - authnet
+networks:
+  authnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+          gateway: 172.19.0.1
