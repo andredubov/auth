@@ -52,7 +52,7 @@ jobs:
     - name: Lint auth Dockerfile
       uses: hadolint/hadolint-action@v3.1.0
       with:
-        dockerfile: ./Dockerfile
+        dockerfile: ./auth.Dockerfile
     - name: Lint migrator Dockerfile
       uses: hadolint/hadolint-action@v3.1.0
       with:
@@ -66,7 +66,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: .
-        file: ./Dockerfile
+        file: ./auth.Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/auth:latest,
               ${{ secrets.DOCKERHUB_USERNAME }}/auth:${{github.ref_name}}
@@ -99,7 +99,7 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           script: |
             # Set env variables for the docker-compose file
-            export TAG=$(echo $TAG)
+            export TAG=${{github.ref_name}}
             export AUTH_IMAGE=$(echo $AUTH_IMAGE)
             export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
             export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
