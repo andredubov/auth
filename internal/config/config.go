@@ -17,14 +17,17 @@ var (
 	ErrConfigFileDoesNotExist = errors.New("config file does't exist")
 )
 
+// GRPC server configuration data
 type GRPCConfig interface {
 	Address() string
 }
 
+// Postgres database configuration data
 type PostgresConfig interface {
 	DSN() string
 }
 
+// Authentication configuration data
 type AuthConfing interface {
 	PasswordSalt() string
 }
