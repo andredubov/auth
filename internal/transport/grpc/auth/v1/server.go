@@ -20,6 +20,7 @@ type authServer struct {
 	passwordHasher  hasher.PasswordHasher
 }
 
+// NewAuthServer returns an instance of authServer struct
 func NewAuthServer(repository repository.Users, hasher hasher.PasswordHasher) auth_v1.AuthServer {
 	return &authServer{
 		usersRepository: repository,
