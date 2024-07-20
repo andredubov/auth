@@ -2,8 +2,7 @@ FROM alpine:3.13
 
 RUN apk update && \
     apk upgrade && \
-    apk add bash && \
-    rm -rf /var/cache/apk/*
+    apk add --no-cache bash=5.2.26-r0
 
 ADD https://github.com/pressly/goose/releases/download/v3.21.1/goose_linux_x86_64 /bin/goose
 RUN chmod +x /bin/goose
