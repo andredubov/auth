@@ -10,7 +10,7 @@ import (
 const (
 	// ConfigPathFlagName is cli flag for config file path
 	ConfigPathFlagName = "config-path"
-	// ConfigPathFlagName is cli flag default value for config path
+	// ConfigPathFlagValue is cli flag default value for config path
 	ConfigPathFlagValue = ""
 )
 
