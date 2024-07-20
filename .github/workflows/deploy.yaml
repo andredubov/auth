@@ -98,7 +98,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSHKEY }}
           script: |
-
             # Set env variables for the docker-compose file
             export TAG=${{github.ref_name}}
             export AUTH_IMAGE=$(echo $AUTH_IMAGE)
