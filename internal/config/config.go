@@ -13,7 +13,9 @@ const (
 )
 
 var (
-	ErrEmptyConfigFilePath    = errors.New("config path is empty")
+	// ErrEmptyConfigFilePath is error config path is empty
+	ErrEmptyConfigFilePath = errors.New("config path is empty")
+	// ErrEmptyConfigFilePath is error config file does't exist
 	ErrConfigFileDoesNotExist = errors.New("config file does't exist")
 )
 
