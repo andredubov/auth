@@ -7,12 +7,12 @@ import (
 )
 
 var (
-	// error user not found
+	// ErrUserNotFound is an error user not found
 	ErrUserNotFound = errors.New("User not found")
 )
 
 type (
-	// Output user data from the user's repository
+	// User is output user data from the user's repository
 	User struct {
 		ID           int64
 		Name         string
@@ -23,7 +23,7 @@ type (
 		UpdatedAt    time.Time
 	}
 
-	// Input user data to update
+	// UpdateUserInfo is input user data to update
 	UpdateUserInfo struct {
 		ID       int64
 		Name     *string
