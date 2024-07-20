@@ -2,24 +2,11 @@ version: '3.3'
 volumes:
   postgres_volume:
 services:
-  auth:
-    image: auth
-    container_name: auth
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    ports:
-      - ${GRPC_PORT}:${GRPC_PORT}
-    depends_on:
-      postgres:
-        condition: service_healthy
   postgres:
     image: postgres:14-alpine3.17
     container_name: postgres
     env_file:
-      - .env
+      - ./config/.env
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
@@ -34,6 +21,21 @@ services:
       timeout: 3s
       retries: 10
       start_period: 60s
+  auth:
+    image: auth
+    container_name: auth
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./config/.env
+    environment:
+      - POSTGRES_HOST=postgres
+    ports:
+      - ${GRPC_PORT}:${GRPC_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
   migrator:
     image: migrator
     container_name: migrator
@@ -42,4 +44,9 @@ services:
       dockerfile: migrator.Dockerfile
     restart: on-failure
     env_file:
-      - .env
+      - ./config/.env
+    environment:
+      - POSTGRES_HOST=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
