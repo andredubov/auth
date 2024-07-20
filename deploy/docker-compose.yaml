@@ -1,0 +1,56 @@
+version: '3.4'
+volumes:
+  postgres_volume:
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE}:${POSTGRES_TAG}
+    container_name: postgres
+    env_file:
+      - ./config/.env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -q -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+    networks:
+      - authnet
+  auth:
+    image: ${AUTH_IMAGE}:${TAG}
+    container_name: auth
+    env_file:
+      - ./config/.env
+    ports:
+      - ${GRPC_PORT}:${GRPC_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      authnet:
+        ipv4_address: 172.19.0.4
+  migrator:
+    image: ${MIGRATOR_IMAGE}:${TAG}
+    container_name: migrator
+    restart: on-failure
+    env_file:
+      - ./config/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - authnet
+networks:
+  authnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+          gateway: 172.19.0.1
