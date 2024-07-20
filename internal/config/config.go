@@ -8,14 +8,16 @@ import (
 )
 
 const (
+	// ConfigPathFlagName is cli flag for config file path
 	ConfigPathFlagName = "config-path"
-	EmptyString        = ""
+	// ConfigPathFlagName is cli flag default value for config path
+	ConfigPathFlagValue = ""
 )
 
 var (
 	// ErrEmptyConfigFilePath is error config path is empty
 	ErrEmptyConfigFilePath = errors.New("config path is empty")
-	// ErrEmptyConfigFilePath is error config file does't exist
+	// ErrConfigFileDoesNotExist is error config file does't exist
 	ErrConfigFileDoesNotExist = errors.New("config file does't exist")
 )
 
@@ -39,11 +41,11 @@ func Load() error {
 	var configPath string
 
 	if flag.Lookup(ConfigPathFlagName) == nil {
-		flag.StringVar(&configPath, ConfigPathFlagName, EmptyString, "path to env file")
+		flag.StringVar(&configPath, ConfigPathFlagName, ConfigPathFlagValue, "path to env file")
 	}
 	flag.Parse()
 
-	if configPath == EmptyString {
+	if configPath == ConfigPathFlagValue {
 		return nil
 	}
 
