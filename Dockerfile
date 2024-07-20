@@ -10,7 +10,5 @@ FROM alpine:latest
 
 WORKDIR /root/
 COPY --from=builder /github.com/andredubov/auth/bin/auth .
-COPY local.env .
-COPY prod.env .
 
 CMD ["./auth"]
