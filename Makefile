@@ -33,7 +33,7 @@ generate-auth-api:
 	./api/auth/v1/auth.proto
 
 local-docker-compose-up:
-	docker compose --env-file ./config/.env up -d --build postgres migrator auth
+	docker-compose --env-file ./config/.env up -d --build postgres migrator auth
 
 build:
 	go build -o ./bin/auth ./cmd/auth/main.go
