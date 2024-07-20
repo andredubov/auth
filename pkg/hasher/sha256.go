@@ -10,7 +10,7 @@ type sha256Hasher struct {
 	salt string
 }
 
-// NewSHA1Hasher returns an instance of sha256 hasher.
+// NewSHA256Hasher returns an instance of sha256 hasher.
 func NewSHA256Hasher(salt string) PasswordHasher {
 	return &sha256Hasher{salt: salt}
 }
