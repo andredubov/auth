@@ -11,6 +11,7 @@ var (
 )
 
 type (
+	// Output user data from the user's repository
 	User struct {
 		ID           int64
 		Name         string
@@ -21,6 +22,7 @@ type (
 		UpdatedAt    time.Time
 	}
 
+	// Input user data to update
 	UpdateUserInfo struct {
 		ID       int64
 		Name     *string
