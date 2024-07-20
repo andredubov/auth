@@ -88,7 +88,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSHKEY }}
+          key: ${{ secrets.SSH_KEY }}
           source: "./deploy/docker-compose.yaml"
           target: "auth"
       - name: Deploy to Selectel Cloud via SSH action
@@ -96,7 +96,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSHKEY }}
+          key: ${{ secrets.SSH_KEY }}
           script: | 
             # Set env variables for the docker-compose file
             export TAG=${{github.ref_name}}
