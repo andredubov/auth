@@ -105,16 +105,16 @@ jobs:
             export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
             export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
             export POSTGRES_TAG=$(echo $POSTGRES_TAG)
-            export POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
-            export GRPC_PORT=${{ secrets.GRPC_PORT }}
-
-            echo $(TAG)
-            echo $(AUTH_IMAGE)
-            echo $(POSTGRES_IMAGE)
 
             # Create .env file
             mkdir -p ./auth/config
-            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" > ./auth/config/.env
+            # echo "TAG=${{ github.ref_name }}" > ./auth/config/.env
+            # echo "AUTH_IMAGE=$AUTH_IMAGE" >> ./auth/config/.env
+            # echo "MIGRATOR_IMAGE=$MIGRATOR_IMAGE" >> ./auth/config/.env
+            # echo "POSTGRES_IMAGE=$POSTGRES_IMAGE" >> ./auth/config/.env
+            # echo "POSTGRES_TAG=$POSTGRES_TAG" >> ./auth/config/.env
+
+            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ./auth/config/.env
             echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ./auth/config/.env
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./auth/config/.env
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ./auth/config/.env
