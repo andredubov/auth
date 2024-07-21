@@ -3,6 +3,7 @@ on:
   push:
     tags: ['[0-9].[0-9]+.[0-9]+']
 env:
+    TAG: ${{ github.ref_name }}
     AUTH_IMAGE: "andreidubov/auth"
     MIGRATOR_IMAGE: "andreidubov/migrator"
     POSTGRES_IMAGE: "postgres"
@@ -98,22 +99,22 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: AUTH_IMAGE,MIGRATOR_IMAGE,POSTGRES_IMAGE,POSTGRES_TAG
+          envs: AUTH_IMAGE,MIGRATOR_IMAGE,POSTGRES_IMAGE,POSTGRES_TAG, TAG
           script: | 
             # Set env variables for the docker-compose file
-            # export TAG=${{ github.ref_name }}
-            # export AUTH_IMAGE=$(echo $AUTH_IMAGE)
-            # export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
-            # export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
-            # export POSTGRES_TAG=$(echo $POSTGRES_TAG)
+            export TAG=$(echo $TAG)
+            export AUTH_IMAGE=$(echo $AUTH_IMAGE)
+            export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
+            export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
+            export POSTGRES_TAG=$(echo $POSTGRES_TAG)
 
             # Create .env file
             mkdir -p ./auth/config
-            echo "TAG=${{ github.ref_name }}" > ./auth/config/.env
-            echo "AUTH_IMAGE=$AUTH_IMAGE" >> ./auth/config/.env
-            echo "MIGRATOR_IMAGE=$MIGRATOR_IMAGE" >> ./auth/config/.env
-            echo "POSTGRES_IMAGE=$POSTGRES_IMAGE" >> ./auth/config/.env
-            echo "POSTGRES_TAG=$POSTGRES_TAG" >> ./auth/config/.env
+            echo "AUTH_VERSION=${{ github.ref_name }}" > ./auth/config/.env
+            # echo "AUTH_IMAGE=$AUTH_IMAGE" >> ./auth/config/.env
+            # echo "MIGRATOR_IMAGE=$MIGRATOR_IMAGE" >> ./auth/config/.env
+            # echo "POSTGRES_IMAGE=$POSTGRES_IMAGE" >> ./auth/config/.env
+            # echo "POSTGRES_TAG=$POSTGRES_TAG" >> ./auth/config/.env
             
             echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ./auth/config/.env
             echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ./auth/config/.env
