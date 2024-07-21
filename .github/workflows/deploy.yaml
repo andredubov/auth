@@ -89,15 +89,15 @@ jobs:
           strip_components: 1
       - name: Deploy to Selectel Cloud via SSH action
         uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          env:
+        env:
             AUTH_IMAGE: "auth"
             MIGRATOR_IMAGE: "migrator"
             POSTGRES_IMAGE: "postgres"
             POSTGRES_TAG: "14-alpine3.17"
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
           envs: AUTH_IMAGE,MIGRATOR_IMAGE,POSTGRES_IMAGE,POSTGRES_TAG
           script: | 
             # Set env variables for the docker-compose file
