@@ -2,11 +2,6 @@ name: deploy
 on:
   push:
     tags: ['[0-9].[0-9]+.[0-9]+']
-env:
-  AUTH_IMAGE: "auth"
-  MIGRATOR_IMAGE: "migrator"
-  POSTGRES_IMAGE: "postgres"
-  POSTGRES_TAG: "14-alpine3.17"
 jobs:
   lint:
     name: lint
@@ -98,6 +93,11 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          env:
+            AUTH_IMAGE: "auth"
+            MIGRATOR_IMAGE: "migrator"
+            POSTGRES_IMAGE: "postgres"
+            POSTGRES_TAG: "14-alpine3.17"
           script: | 
             # Set env variables for the docker-compose file
             # export TAG=${{ github.ref_name }}
