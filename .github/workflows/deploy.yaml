@@ -1,7 +1,7 @@
 name: deploy
 on:
   push:
-    tags: ['v[0-9].[0-9]+.[0-9]+']
+    tags: ['^v[0-9].[0-9]+.[0-9]+']
 env:
   AUTH_IMAGE: "auth"
   MIGRATOR_IMAGE: "migrator"
