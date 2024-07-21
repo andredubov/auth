@@ -3,8 +3,8 @@ on:
   push:
     tags: ['[0-9].[0-9]+.[0-9]+']
 env:
-    AUTH_IMAGE: "auth"
-    MIGRATOR_IMAGE: "migrator"
+    AUTH_IMAGE: "andreidubov/auth"
+    MIGRATOR_IMAGE: "andreidubov/migrator"
     POSTGRES_IMAGE: "postgres"
     POSTGRES_TAG: "14-alpine3.17"
 jobs:
@@ -127,7 +127,7 @@ jobs:
             echo "PASSWORD_SALT=${{ secrets.PASSWORD_SALT }}" >> ./auth/config/.env
 
             # Login into DockerHub
-            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            # echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
             # Run a new container from a new image
             cd ./auth
