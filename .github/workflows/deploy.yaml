@@ -68,16 +68,16 @@ jobs:
         context: .
         file: ./auth.Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ AUTH_IMAGE }}:latest,
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ AUTH_IMAGE }}:${{github.ref_name}}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/$(AUTH_IMAGE):latest,
+              ${{ secrets.DOCKERHUB_USERNAME }}/$(AUTH_IMAGE):${{github.ref_name}}
     - name: Build and push migrator docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         file: ./migrator.Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ MIGRATOR_IMAGE }}:latest,
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ MIGRATOR_IMAGE }}:${{github.ref_name}}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/$(MIGRATOR_IMAGE):latest,
+              ${{ secrets.DOCKERHUB_USERNAME }}/$(MIGRATOR_IMAGE):${{github.ref_name}}
   deploy:
     needs: [publish]
     runs-on: ubuntu-latest
@@ -107,6 +107,10 @@ jobs:
             export POSTGRES_TAG=$(echo $POSTGRES_TAG)
             export POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
             export GRPC_PORT=${{ secrets.GRPC_PORT }}
+
+            echo $(TAG)
+            echo $(AUTH_IMAGE)
+            echo $(POSTGRES_IMAGE)
 
             # Create .env file
             mkdir -p ./auth/config
