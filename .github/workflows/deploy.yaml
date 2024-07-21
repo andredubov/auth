@@ -2,6 +2,11 @@ name: deploy
 on:
   push:
     tags: ['[0-9].[0-9]+.[0-9]+']
+env:
+    AUTH_IMAGE: "auth"
+    MIGRATOR_IMAGE: "migrator"
+    POSTGRES_IMAGE: "postgres"
+    POSTGRES_TAG: "14-alpine3.17"
 jobs:
   lint:
     name: lint
@@ -89,11 +94,6 @@ jobs:
           strip_components: 1
       - name: Deploy to Selectel Cloud via SSH action
         uses: appleboy/ssh-action@v1.0.3
-        env:
-            AUTH_IMAGE: "auth"
-            MIGRATOR_IMAGE: "migrator"
-            POSTGRES_IMAGE: "postgres"
-            POSTGRES_TAG: "14-alpine3.17"
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -101,21 +101,21 @@ jobs:
           envs: AUTH_IMAGE,MIGRATOR_IMAGE,POSTGRES_IMAGE,POSTGRES_TAG
           script: | 
             # Set env variables for the docker-compose file
-            # export TAG=${{ github.ref_name }}
-            # export AUTH_IMAGE=$(echo $AUTH_IMAGE)
-            # export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
-            # export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
-            # export POSTGRES_TAG=$(echo $POSTGRES_TAG)
+            export TAG=${{ github.ref_name }}
+            export AUTH_IMAGE=$(echo $AUTH_IMAGE)
+            export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
+            export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
+            export POSTGRES_TAG=$(echo $POSTGRES_TAG)
 
             # Create .env file
             mkdir -p ./auth/config
-            echo "TAG=${{ github.ref_name }}" > ./auth/config/.env
-            echo "AUTH_IMAGE=$AUTH_IMAGE" >> ./auth/config/.env
-            echo "MIGRATOR_IMAGE=$MIGRATOR_IMAGE" >> ./auth/config/.env
-            echo "POSTGRES_IMAGE=$POSTGRES_IMAGE" >> ./auth/config/.env
-            echo "POSTGRES_TAG=$POSTGRES_TAG" >> ./auth/config/.env
+            # echo "TAG=${{ github.ref_name }}" > ./auth/config/.env
+            # echo "AUTH_IMAGE=$AUTH_IMAGE" >> ./auth/config/.env
+            # echo "MIGRATOR_IMAGE=$MIGRATOR_IMAGE" >> ./auth/config/.env
+            # echo "POSTGRES_IMAGE=$POSTGRES_IMAGE" >> ./auth/config/.env
+            # echo "POSTGRES_TAG=$POSTGRES_TAG" >> ./auth/config/.env
             
-            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ./auth/config/.env
+            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" > ./auth/config/.env
             echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ./auth/config/.env
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./auth/config/.env
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ./auth/config/.env
