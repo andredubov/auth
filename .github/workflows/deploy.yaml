@@ -68,16 +68,16 @@ jobs:
         context: .
         file: ./auth.Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/$(AUTH_IMAGE):latest,
-              ${{ secrets.DOCKERHUB_USERNAME }}/$(AUTH_IMAGE):${{github.ref_name}}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/auth:latest,
+              ${{ secrets.DOCKERHUB_USERNAME }}/auth:${{ github.ref_name }}
     - name: Build and push migrator docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         file: ./migrator.Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/$(MIGRATOR_IMAGE):latest,
-              ${{ secrets.DOCKERHUB_USERNAME }}/$(MIGRATOR_IMAGE):${{github.ref_name}}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/migrator:latest,
+              ${{ secrets.DOCKERHUB_USERNAME }}/migrator:${{ github.ref_name }}
   deploy:
     needs: [publish]
     runs-on: ubuntu-latest
@@ -100,7 +100,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: | 
             # Set env variables for the docker-compose file
-            export TAG=${{github.ref_name}}
+            export TAG=${{ github.ref_name }}
             export AUTH_IMAGE=$(echo $AUTH_IMAGE)
             export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
             export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
