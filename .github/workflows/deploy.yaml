@@ -127,7 +127,7 @@ jobs:
             echo "PASSWORD_SALT=${{ secrets.PASSWORD_SALT }}" >> ./auth/config/.env
 
             # Login into DockerHub
-            # echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_TOKEN }} --password-stdin
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_TOKEN }} --password-stdin
 
             # Run a new container from a new image
             cd ./auth
