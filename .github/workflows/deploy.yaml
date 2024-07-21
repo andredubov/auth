@@ -98,6 +98,7 @@ jobs:
             MIGRATOR_IMAGE: "migrator"
             POSTGRES_IMAGE: "postgres"
             POSTGRES_TAG: "14-alpine3.17"
+          envs: AUTH_IMAGE,MIGRATOR_IMAGE,POSTGRES_IMAGE,POSTGRES_TAG
           script: | 
             # Set env variables for the docker-compose file
             # export TAG=${{ github.ref_name }}
