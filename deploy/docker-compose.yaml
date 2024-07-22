@@ -3,7 +3,7 @@ volumes:
 services:
   postgres:
     image: ${POSTGRES_IMAGE}:${POSTGRES_TAG}
-    container_name: auth-postgres
+    container_name: auth_postgres
     environment:
       - POSTGRES_HOST=${PG_HOST}
       - POSTGRES_PORT=${PG_PORT}
