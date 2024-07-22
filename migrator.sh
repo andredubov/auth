@@ -1,5 +1,5 @@
 #!/bin/bash
 
-MIGRATION_DSN="host=${POSTGRES_HOST} port=${POSTGRES_PORT} dbname=${POSTGRES_DB} user=${POSTGRES_USER} password=${POSTGRES_PASSWORD} sslmode=${POSTGRES_SSL_MODE}"
+MIGRATION_DSN="host=${PG_HOST} port=${PG_PORT} dbname=${PG_DB} user=${PG_USER} password=${PG_PASSWORD} sslmode=${PG_SSL_MODE}"
 
 sleep 2 && goose -dir "${MIGRATION_DIR}" postgres "$MIGRATION_DSN" up -v
