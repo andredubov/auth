@@ -77,8 +77,8 @@ jobs:
         context: .
         file: ./migrator.Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/chat-migrator:latest,
-              ${{ secrets.DOCKERHUB_USERNAME }}/chat-migrator:${{ github.ref_name }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/auth-migrator:latest,
+              ${{ secrets.DOCKERHUB_USERNAME }}/auth-migrator:${{ github.ref_name }}
   deploy:
     needs: [publish]
     runs-on: ubuntu-latest
