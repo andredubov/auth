@@ -3,7 +3,7 @@ volumes:
 services:
   postgres:
     image: postgres:14-alpine3.17
-    container_name: postgres
+    container_name: auth-postgres
     environment:
       - POSTGRES_HOST=${PG_HOST}
       - POSTGRES_PORT=${PG_PORT}
@@ -19,7 +19,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -q -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+          "pg_isready -q -U ${PG_USER} -d ${PG_DB}"
         ]
       interval: 5s
       timeout: 3s
