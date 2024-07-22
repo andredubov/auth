@@ -56,7 +56,7 @@ func NewPostgresConfig() (config.PostgresConfig, error) {
 
 	sslmode := os.Getenv(sslmodeEnvName)
 	if len(port) == 0 {
-		return nil, fmt.Errorf("%s: %s", op, "postgres password not found")
+		return nil, fmt.Errorf("%s: %s", op, "postgres ssl mode not found")
 	}
 
 	return &postgresConfig{
