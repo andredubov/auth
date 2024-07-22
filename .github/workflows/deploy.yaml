@@ -4,8 +4,8 @@ on:
     tags: ['[0-9].[0-9]+.[0-9]+']
 env:
     TAG: ${{ github.ref_name }}
-    AUTH_IMAGE: "andreidubov/auth"
-    MIGRATOR_IMAGE: "andreidubov/migrator"
+    AUTH_IMAGE: "andreidubov/auth-server"
+    MIGRATOR_IMAGE: "andreidubov/auth-migrator"
     POSTGRES_IMAGE: "postgres"
     POSTGRES_TAG: "14-alpine3.17"
 jobs:
@@ -50,11 +50,11 @@ jobs:
       uses: docker/setup-qemu-action@v3
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v3
-    - name: Lint auth Dockerfile
+    - name: Lint auth-server Dockerfile
       uses: hadolint/hadolint-action@v3.1.0
       with:
         dockerfile: ./auth.Dockerfile
-    - name: Lint migrator Dockerfile
+    - name: Lint auth-migrator Dockerfile
       uses: hadolint/hadolint-action@v3.1.0
       with:
         dockerfile: ./migrator.Dockerfile
@@ -69,16 +69,16 @@ jobs:
         context: .
         file: ./auth.Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/auth:latest,
-              ${{ secrets.DOCKERHUB_USERNAME }}/auth:${{ github.ref_name }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/auth-server:latest,
+              ${{ secrets.DOCKERHUB_USERNAME }}/auth-server:${{ github.ref_name }}
     - name: Build and push migrator docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         file: ./migrator.Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/migrator:latest,
-              ${{ secrets.DOCKERHUB_USERNAME }}/migrator:${{ github.ref_name }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/chat-migrator:latest,
+              ${{ secrets.DOCKERHUB_USERNAME }}/chat-migrator:${{ github.ref_name }}
   deploy:
     needs: [publish]
     runs-on: ubuntu-latest
@@ -111,12 +111,12 @@ jobs:
             # Create .env file
             mkdir -p ./auth/config
             echo "AUTH_VERSION=${{ github.ref_name }}" > ./auth/config/.env
-            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ./auth/config/.env
-            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ./auth/config/.env
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./auth/config/.env
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ./auth/config/.env
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./auth/config/.env
-            echo "POSTGRES_SSL_MODE=${{ secrets.POSTGRES_SSL_MODE }}" >> ./auth/config/.env
+            echo "PG_HOST=${{ secrets.POSTGRES_HOST }}" >> ./auth/config/.env
+            echo "PG_PORT=${{ secrets.POSTGRES_PORT }}" >> ./auth/config/.env
+            echo "PG_DB=${{ secrets.POSTGRES_DB }}" >> ./auth/config/.env
+            echo "PG_USER=${{ secrets.POSTGRES_USER }}" >> ./auth/config/.env
+            echo "PG_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./auth/config/.env
+            echo "PG_SSL_MODE=${{ secrets.POSTGRES_SSL_MODE }}" >> ./auth/config/.env
             echo "MIGRATION_DIR=${{ secrets.MIGRATION_DIR }}" >> ./auth/config/.env
             echo "GRPC_HOST=${{ secrets.GRPC_HOST }}" >> ./auth/config/.env
             echo "GRPC_PORT=${{ secrets.GRPC_PORT }}" >> ./auth/config/.env
@@ -129,5 +129,5 @@ jobs:
             cd ./auth
             docker-compose -f ./deploy/docker-compose.yaml --env-file ./config/.env stop
             docker-compose -f ./deploy/docker-compose.yaml --env-file ./config/.env rm -f
-            docker-compose -f ./deploy/docker-compose.yaml --env-file ./config/.env build auth migrator 
+            docker-compose -f ./deploy/docker-compose.yaml --env-file ./config/.env build migrator auth
             docker-compose -f ./deploy/docker-compose.yaml --env-file ./config/.env up -d --force-recreate postgres migrator auth

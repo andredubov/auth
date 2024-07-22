@@ -1,20 +1,25 @@
 volumes:
-  postgres_volume:
+  postgres-volume:
 services:
   postgres:
     image: ${POSTGRES_IMAGE}:${POSTGRES_TAG}
-    container_name: postgres
-    env_file:
-      - ../config/.env
+    container_name: auth-postgres
+    environment:
+      - POSTGRES_HOST=${PG_HOST}
+      - POSTGRES_PORT=${PG_PORT}
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_SSL_MODE=${PG_SSL_MODE}
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - ${PG_PORT}:${PG_PORT}
     volumes:
-      - postgres_volume:/var/lib/postgresql/data
+      - postgres-volume:/var/lib/postgresql/data
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -q -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+          "pg_isready -q -U ${PG_USER} -d ${PG_DB}"
         ]
       interval: 5s
       timeout: 3s
@@ -24,7 +29,7 @@ services:
       - authnet
   auth:
     image: ${AUTH_IMAGE}:${TAG}
-    container_name: auth
+    container_name: auth-server
     env_file:
       - ../config/.env
     ports:
@@ -37,7 +42,7 @@ services:
         ipv4_address: 172.19.0.4
   migrator:
     image: ${MIGRATOR_IMAGE}:${TAG}
-    container_name: migrator
+    container_name: auth-migrator
     restart: on-failure
     env_file:
       - ../config/.env

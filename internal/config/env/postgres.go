@@ -8,12 +8,12 @@ import (
 )
 
 const (
-	hostEnvName     = "POSTGRES_HOST"
-	portEnvName     = "POSTGRES_PORT"
-	dbnameEnvName   = "POSTGRES_DB"
-	userEnvName     = "POSTGRES_USER"
-	passwordEnvName = "POSTGRES_PASSWORD"
-	sslmodeEnvName  = "POSTGRES_SSL_MODE"
+	hostEnvName     = "PG_HOST"
+	portEnvName     = "PG_PORT"
+	dbnameEnvName   = "PG_DB"
+	userEnvName     = "PG_USER"
+	passwordEnvName = "PG_PASSWORD"
+	sslmodeEnvName  = "PG_SSL_MODE"
 )
 
 type postgresConfig struct {
