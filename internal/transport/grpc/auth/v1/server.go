@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/andredubov/auth/internal/repository"
 	auth_v1 "github.com/andredubov/auth/pkg/auth/v1"
@@ -44,7 +43,7 @@ func (a *authServer) Create(ctx context.Context, r *auth_v1.CreateRequest) (*aut
 
 	id, err := a.usersRepository.Create(ctx, r.Info.GetName(), r.Info.GetEmail(), passwordHash, int(r.Info.GetRole()))
 	if err != nil {
-		log.Printf("Cannot add new user: %v\n", err)
+		return nil, status.Error(codes.Internal, "failed to create a new user")
 	}
 
 	return &auth_v1.CreateResponse{
