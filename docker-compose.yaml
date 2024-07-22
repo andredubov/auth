@@ -1,9 +1,9 @@
 volumes:
-  postgres-volume:
+  postgres_volume:
 services:
   postgres:
     image: postgres:14-alpine3.17
-    container_name: auth-postgres
+    container_name: auth_postgres
     environment:
       - POSTGRES_HOST=${PG_HOST}
       - POSTGRES_PORT=${PG_PORT}
@@ -14,7 +14,7 @@ services:
     ports:
       - ${PG_PORT}:${PG_PORT}
     volumes:
-      - postgres-volume:/var/lib/postgresql/data
+      - postgres_volume:/var/lib/postgresql/data
     healthcheck:
       test:
         [
@@ -29,7 +29,7 @@ services:
       - authnet
   auth:
     image: auth-server
-    container_name: auth-server
+    container_name: auth_server
     build:
       context: .
       dockerfile: auth.Dockerfile
@@ -47,7 +47,7 @@ services:
         ipv4_address: 172.19.0.4
   migrator:
     image: auth-migrator
-    container_name: auth-migrator
+    container_name: auth_migrator
     build:
       context: .
       dockerfile: migrator.Dockerfile
