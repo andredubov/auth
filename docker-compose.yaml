@@ -59,7 +59,7 @@ services:
         condition: service_healthy
     networks:
       authnet:
-        ipv4_address: 172.20.0.4
+        ipv4_address: 172.19.0.4
 networks:
   authnet:
     driver: bridge
