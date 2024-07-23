@@ -35,7 +35,7 @@ generate-auth-api:
 local-docker-compose-up:
 	docker-compose --env-file ./config/.env stop
 	docker-compose --env-file ./config/.env rm -f
-	docker-compose --env-file ./config/.env build auth migrator 
+	docker-compose --env-file ./config/.env build migrator auth
 	docker-compose --env-file ./config/.env up --force-recreate -d postgres migrator auth
 
 build:
