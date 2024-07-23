@@ -5,14 +5,11 @@ services:
     image: ${POSTGRES_IMAGE}:${POSTGRES_TAG}
     container_name: auth_postgres
     environment:
-      - POSTGRES_HOST=${PG_HOST}
-      - POSTGRES_PORT=${PG_PORT}
       - POSTGRES_DB=${PG_DB}
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_PASSWORD}
-      - POSTGRES_SSL_MODE=${PG_SSL_MODE}
     ports:
-      - ${PG_PORT}:${PG_PORT}
+      - ${PG_PORT_OUT}:${PG_PORT}
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     healthcheck:
@@ -26,7 +23,8 @@ services:
       retries: 10
       start_period: 60s
     networks:
-      - authnet
+      authnet:
+        ipv4_address: 172.19.0.2
   auth:
     image: ${AUTH_IMAGE}:${TAG}
     container_name: auth_server
@@ -39,7 +37,7 @@ services:
         condition: service_healthy
     networks:
       authnet:
-        ipv4_address: 172.19.0.4
+        ipv4_address: 172.19.0.3
   migrator:
     image: ${MIGRATOR_IMAGE}:${TAG}
     container_name: auth_migrator
@@ -50,7 +48,8 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - authnet
+      authnet:
+        ipv4_address: 172.19.0.4
 networks:
   authnet:
     driver: bridge
