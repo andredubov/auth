@@ -113,6 +113,7 @@ jobs:
             echo "AUTH_VERSION=${{ github.ref_name }}" > ./auth/config/.env
             echo "PG_HOST=${{ secrets.POSTGRES_HOST }}" >> ./auth/config/.env
             echo "PG_PORT=${{ secrets.POSTGRES_PORT }}" >> ./auth/config/.env
+            echo "PG_PORT_OUT=${{ secrets.POSTGRES_PORT_OUT }}" >> ./auth/config/.env
             echo "PG_DB=${{ secrets.POSTGRES_DB }}" >> ./auth/config/.env
             echo "PG_USER=${{ secrets.POSTGRES_USER }}" >> ./auth/config/.env
             echo "PG_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./auth/config/.env
