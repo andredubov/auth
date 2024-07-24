@@ -128,7 +128,10 @@ jobs:
 
             # Run a new container from a new image
             cd ./auth
-            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env stop migrator auth
-            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env rm -f migrator auth
-            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env build migrator auth
-            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env up -d --force-recreate migrator auth
+            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env stop auth-migrator
+            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env stop auth-server
+            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env rm -f auth-migrator
+            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env rm -f auth-server
+            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env build auth-migrator 
+            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env build auth-server
+            docker compose -f ./deploy/docker-compose.yaml --env-file ./config/.env up --force-recreate -d
