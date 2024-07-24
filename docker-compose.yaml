@@ -1,7 +1,7 @@
 volumes:
-  postgres_volume:
+  auth_postgres_volume:
 services:
-  postgres:
+  auth-postgres:
     image: postgres:14-alpine3.17
     container_name: auth_postgres
     environment:
@@ -21,7 +21,7 @@ services:
     networks:
       authnet:
         ipv4_address: 172.19.0.2
-  auth:
+  auth-server:
     image: auth-server
     container_name: auth_server
     build:
@@ -32,12 +32,12 @@ services:
     ports:
       - ${GRPC_PORT}:${GRPC_PORT}
     depends_on:
-      postgres:
+      auth-postgres:
         condition: service_healthy
     networks:
       authnet:
         ipv4_address: 172.19.0.3
-  migrator:
+  auth-migrator:
     image: auth-migrator
     container_name: auth_migrator
     build:
@@ -47,7 +47,7 @@ services:
     env_file:
       - ./config/.env
     depends_on:
-      postgres:
+      auth-postgres:
         condition: service_healthy
     networks:
       authnet:
