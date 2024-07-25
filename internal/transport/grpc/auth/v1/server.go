@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"errors"
 
 	"github.com/andredubov/auth/internal/repository"
 	auth_v1 "github.com/andredubov/auth/pkg/auth/v1"
@@ -54,10 +53,6 @@ func (a *authServer) Create(ctx context.Context, r *auth_v1.CreateRequest) (*aut
 func (a *authServer) Get(ctx context.Context, r *auth_v1.GetRequest) (*auth_v1.GetResponse, error) {
 	user, err := a.usersRepository.GetByID(ctx, r.GetId())
 	if err != nil {
-		if errors.Is(err, repository.ErrUserNotFound) {
-
-			return nil, status.Error(codes.Internal, err.Error())
-		}
 		return nil, status.Error(codes.Internal, "failed to get user")
 	}
 
