@@ -14,10 +14,17 @@ import (
 )
 
 const (
-	usersTable  = "users"
-	unknownRole = 0
-	userRole    = 1
-	adminRole   = 2
+	usersTable                = "users"
+	idUsersTabelColumn        = "id"
+	nameUsersTableColumn      = "name"
+	emailUsersTableColumn     = "email"
+	passhashUsersTableColumn  = "pass_hash"
+	roleUsersTableColumn      = "role"
+	createdAtUsersTableColumn = "created_at"
+	updatedAtUsersTableColumn = "updated_at"
+	unknownRole               = 0
+	userRole                  = 1
+	adminRole                 = 2
 )
 
 type usersRepository struct {
@@ -37,7 +44,7 @@ func (u *usersRepository) Create(ctx context.Context, name, email, password stri
 
 	insertBuilder := sq.Insert(usersTable).
 		PlaceholderFormat(sq.Dollar).
-		Columns("name", "email", "pass_hash", "role").
+		Columns(nameUsersTableColumn, emailUsersTableColumn, passhashUsersTableColumn, roleUsersTableColumn).
 		Values(name, email, password, role).
 		Suffix("RETURNING id")
 
@@ -62,10 +69,17 @@ func (u *usersRepository) Create(ctx context.Context, name, email, password stri
 func (u *usersRepository) GetByID(ctx context.Context, userID int64) (repository.User, error) {
 	const op = "usersRepository.GetByID"
 
-	queryBuilder := sq.Select("id", "name", "email", "pass_hash", "role", "created_at", "updated_at").
-		From(usersTable).
+	queryBuilder := sq.Select(
+		idUsersTabelColumn,
+		nameUsersTableColumn,
+		emailUsersTableColumn,
+		passhashUsersTableColumn,
+		roleUsersTableColumn,
+		createdAtUsersTableColumn,
+		updatedAtUsersTableColumn,
+	).From(usersTable).
 		PlaceholderFormat(sq.Dollar).
-		Where(sq.Eq{"id": userID}).
+		Where(sq.Eq{idUsersTabelColumn: userID}).
 		Limit(1)
 
 	query, args, err := queryBuilder.ToSql()
@@ -112,18 +126,18 @@ func (u *usersRepository) Update(ctx context.Context, userInfo repository.Update
 		PlaceholderFormat(sq.Dollar)
 
 	if userInfo.Name != nil {
-		updateBuilder = updateBuilder.Set("name", userInfo.Name)
+		updateBuilder = updateBuilder.Set(nameUsersTableColumn, userInfo.Name)
 	}
 
 	if userInfo.Email != nil {
-		updateBuilder = updateBuilder.Set("email", userInfo.Email)
+		updateBuilder = updateBuilder.Set(emailUsersTableColumn, userInfo.Email)
 	}
 
 	if userInfo.UserRole != nil {
-		updateBuilder = updateBuilder.Set("role", userInfo.UserRole)
+		updateBuilder = updateBuilder.Set(roleUsersTableColumn, userInfo.UserRole)
 	}
 
-	updateBuilder = updateBuilder.Set("updated_at", time.Now()).Where(sq.Eq{"id": userInfo.ID})
+	updateBuilder = updateBuilder.Set(updatedAtUsersTableColumn, time.Now()).Where(sq.Eq{idUsersTabelColumn: userInfo.ID})
 
 	query, args, err := updateBuilder.ToSql()
 	if err != nil {
@@ -146,7 +160,7 @@ func (u *usersRepository) Delete(ctx context.Context, userID int64) (int64, erro
 
 	deleteBuilder := sq.Delete(usersTable).
 		PlaceholderFormat(sq.Dollar).
-		Where(sq.Eq{"id": userID})
+		Where(sq.Eq{idUsersTabelColumn: userID})
 
 	query, args, err := deleteBuilder.ToSql()
 	if err != nil {
