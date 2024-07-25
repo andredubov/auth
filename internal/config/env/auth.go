@@ -17,11 +17,9 @@ type authConfig struct {
 
 // NewAuthConfig returns an intance of authConfig struct
 func NewAuthConfig() (config.AuthConfing, error) {
-	const op = "env.NewAuthConfig"
-
 	passwordSalt := os.Getenv(passwordSaltEnvName)
 	if len(passwordSalt) == 0 {
-		return nil, fmt.Errorf("%s: %s", op, "password salt not found")
+		return nil, fmt.Errorf("%s", "password salt not found")
 	}
 
 	return &authConfig{
