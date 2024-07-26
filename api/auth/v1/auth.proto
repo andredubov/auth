@@ -35,10 +35,9 @@ message User {
 }
 
 message UpdateUserInfo {
-  int64 id = 1;
-  google.protobuf.StringValue name = 2;
-  google.protobuf.StringValue email = 3;
-  UserRole role = 4;
+  google.protobuf.StringValue name = 1;
+  google.protobuf.StringValue email = 2;
+  UserRole role = 3;
 }
 
 message CreateRequest {

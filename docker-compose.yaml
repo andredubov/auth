@@ -1,0 +1,61 @@
+volumes:
+  auth_postgres_volume:
+services:
+  auth-postgres:
+    image: postgres:14-alpine3.17
+    container_name: auth_postgres
+    environment:
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+    ports:
+      - ${PG_PORT_OUT}:${PG_PORT}
+    volumes:
+      - auth_postgres_volume:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -U ${PG_USER} -d ${PG_DB}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+    networks:
+      authnet:
+        ipv4_address: 172.19.0.2
+  auth-server:
+    image: auth-server
+    container_name: auth_server
+    build:
+      context: .
+      dockerfile: auth.Dockerfile
+    env_file:
+      - ./config/.env
+    ports:
+      - ${GRPC_PORT}:${GRPC_PORT}
+    depends_on:
+      auth-postgres:
+        condition: service_healthy
+    networks:
+      authnet:
+        ipv4_address: 172.19.0.3
+  auth-migrator:
+    image: auth-migrator
+    container_name: auth_migrator
+    build:
+      context: .
+      dockerfile: migrator.Dockerfile
+    restart: on-failure
+    env_file:
+      - ./config/.env
+    depends_on:
+      auth-postgres:
+        condition: service_healthy
+    networks:
+      authnet:
+        ipv4_address: 172.19.0.4
+networks:
+  authnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+          gateway: 172.19.0.1
