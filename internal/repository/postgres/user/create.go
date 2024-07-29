@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/andredubov/auth/internal/model"
+	"github.com/andredubov/auth/internal/service/model"
 )
 
 // Create new user in the repository
