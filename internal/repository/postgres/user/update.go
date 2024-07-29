@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/andredubov/auth/internal/model"
+	"github.com/andredubov/auth/internal/service/model"
 )
 
 // Update a user in the repository
