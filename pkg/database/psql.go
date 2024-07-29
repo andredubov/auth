@@ -8,10 +8,8 @@ import (
 )
 
 // NewPostgresConnection returns an instance for connection to the postgres database
-func NewPostgresConnection(cfg config.PostgresConfig) (*pgxpool.Pool, error) {
-	ctx := context.Background()
+func NewPostgresConnection(ctx context.Context, cfg config.PostgresConfig) (*pgxpool.Pool, error) {
 	pool, err := pgxpool.Connect(ctx, cfg.DSN())
-
 	if err != nil {
 		return nil, err
 	}
