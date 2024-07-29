@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/andredubov/auth/internal/model"
+	"github.com/andredubov/auth/internal/service/model"
 )
 
 var (
