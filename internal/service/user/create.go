@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/andredubov/auth/internal/model"
+	"github.com/andredubov/auth/internal/service/model"
 )
 
 // Create a new user
