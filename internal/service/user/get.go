@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/andredubov/auth/internal/model"
+	"github.com/andredubov/auth/internal/service/model"
 )
 
 func (u *usersService) GetByID(ctx context.Context, userID int64) (model.User, error) {
