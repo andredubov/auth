@@ -5,6 +5,9 @@ import (
 	"log"
 
 	server "github.com/andredubov/auth/internal/api/auth/v1"
+	"github.com/andredubov/auth/internal/client/database"
+	postgresClient "github.com/andredubov/auth/internal/client/database/postgres"
+	"github.com/andredubov/auth/internal/client/database/transaction"
 	"github.com/andredubov/auth/internal/closer"
 	"github.com/andredubov/auth/internal/config"
 	"github.com/andredubov/auth/internal/config/env"
@@ -13,7 +16,6 @@ import (
 	"github.com/andredubov/auth/internal/service"
 	"github.com/andredubov/auth/internal/service/user"
 	"github.com/andredubov/auth/pkg/hasher"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type serviceProvider struct {
@@ -21,7 +23,8 @@ type serviceProvider struct {
 	authConfig           config.AuthConfing
 	grpcConfig           config.GRPCConfig
 	passwordHasher       hasher.PasswordHasher
-	postgresPool         *pgxpool.Pool
+	databaseClient       database.Client
+	databaseTxManager    database.TxManager
 	usersRepository      repository.Users
 	usersService         service.Users
 	serverImplementation *server.Implementation
@@ -79,32 +82,41 @@ func (s *serviceProvider) PasswordHasher() hasher.PasswordHasher {
 	return s.passwordHasher
 }
 
-func (s *serviceProvider) PostgresPool(ctx context.Context) *pgxpool.Pool {
-	if s.postgresPool == nil {
-		pool, err := pgxpool.Connect(ctx, s.PostgresConfig().DSN())
+func (s *serviceProvider) DatabaseClient(ctx context.Context) database.Client {
+	if s.databaseClient == nil {
+		dbClient, err := postgresClient.New(ctx, s.PostgresConfig().DSN())
 		if err != nil {
 			log.Fatalf("failed to connect to database: %v", err)
 		}
 
-		if err := pool.Ping(ctx); err != nil {
+		if err := dbClient.Database().Ping(ctx); err != nil {
 			log.Fatalf("database ping error: %v", err)
 		}
 
 		closer.Add(func() error {
-			pool.Close()
+			dbClient.Database().Close()
 			return nil
 		})
 
-		s.postgresPool = pool
+		s.databaseClient = dbClient
 	}
 
-	return s.postgresPool
+	return s.databaseClient
+}
+
+func (s *serviceProvider) TxManager(ctx context.Context) database.TxManager {
+	if s.databaseTxManager == nil {
+		db := s.DatabaseClient(ctx).Database()
+		s.databaseTxManager = transaction.NewTransactionManager(db)
+	}
+
+	return s.databaseTxManager
 }
 
 func (s *serviceProvider) UsersRepository(ctx context.Context) repository.Users {
 	if s.usersRepository == nil {
-		pool := s.PostgresPool(ctx)
-		s.usersRepository = postgres.NewUsersRepository(pool)
+		dbClient := s.DatabaseClient(ctx)
+		s.usersRepository = postgres.NewUsersRepository(dbClient)
 	}
 
 	return s.usersRepository
@@ -114,7 +126,8 @@ func (s *serviceProvider) UsersService(ctx context.Context) service.Users {
 	if s.usersService == nil {
 		usersRepository := s.UsersRepository(ctx)
 		passwordHasher := s.PasswordHasher()
-		s.usersService = user.NewService(usersRepository, passwordHasher)
+		txManager := s.TxManager(ctx)
+		s.usersService = user.NewService(usersRepository, passwordHasher, txManager)
 	}
 
 	return s.usersService
