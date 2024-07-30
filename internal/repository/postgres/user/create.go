@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/andredubov/auth/internal/client/database"
 	"github.com/andredubov/auth/internal/service/model"
 )
 
@@ -21,8 +22,12 @@ func (u *usersRepository) Create(ctx context.Context, user model.User) (int64, e
 	}
 
 	userID := int64(0)
+	q := database.Query{
+		Name:     "usersRepository.Create",
+		QueryRaw: query,
+	}
 
-	err = u.pool.QueryRow(ctx, query, args...).Scan(&userID)
+	err = u.dbClient.Database().QueryRowContext(ctx, q, args...).Scan(&userID)
 	if err != nil {
 		return 0, err
 	}
