@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/andredubov/auth/internal/client/database"
 )
 
 // Delete a user from the repository
@@ -17,7 +18,12 @@ func (u *usersRepository) Delete(ctx context.Context, userID int64) (int64, erro
 		return 0, err
 	}
 
-	res, err := u.pool.Exec(ctx, query, args...)
+	q := database.Query{
+		Name:     "usersRepository.Delete",
+		QueryRaw: query,
+	}
+
+	res, err := u.dbClient.Database().ExecContext(ctx, q, args...)
 	if err != nil {
 		return 0, err
 	}
