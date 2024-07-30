@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/andredubov/auth/internal/client/database"
 	"github.com/andredubov/auth/internal/repository"
 	"github.com/andredubov/auth/internal/repository/converter"
 	modelRepo "github.com/andredubov/auth/internal/repository/model"
@@ -32,23 +33,18 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (model.User
 		return model.User{}, err
 	}
 
-	row, user := u.pool.QueryRow(ctx, query, args...), modelRepo.User{}
+	q := database.Query{
+		Name:     "usersRepository.GetByID",
+		QueryRaw: query,
+	}
 
-	err = row.Scan(
-		&user.ID,
-		&user.Name,
-		&user.Email,
-		&user.PasswordHash,
-		&user.UserRole,
-		&user.CreatedAt,
-		&user.UpdatedAt,
-	)
+	user := modelRepo.User{}
+	err = u.dbClient.Database().ScanOneContext(ctx, &user, q, args...)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return model.User{}, repository.ErrUserNotFound
 		}
-
 		return model.User{}, err
 	}
 
