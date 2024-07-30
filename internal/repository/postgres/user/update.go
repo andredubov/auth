@@ -5,6 +5,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/andredubov/auth/internal/client/database"
 	"github.com/andredubov/auth/internal/service/model"
 )
 
@@ -32,7 +33,12 @@ func (u *usersRepository) Update(ctx context.Context, userInfo model.UpdateUserI
 		return 0, err
 	}
 
-	res, err := u.pool.Exec(ctx, query, args...)
+	q := database.Query{
+		Name:     "usersRepository.Update",
+		QueryRaw: query,
+	}
+
+	res, err := u.dbClient.Database().ExecContext(ctx, q, args...)
 	if err != nil {
 		return 0, err
 	}
