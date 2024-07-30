@@ -1,8 +1,8 @@
 package postgres
 
 import (
+	"github.com/andredubov/auth/internal/client/database"
 	"github.com/andredubov/auth/internal/repository"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 const (
@@ -20,12 +20,12 @@ const (
 )
 
 type usersRepository struct {
-	pool *pgxpool.Pool
+	dbClient database.Client
 }
 
 // NewUsersRepository create an instance of the usersRepository struct
-func NewUsersRepository(pool *pgxpool.Pool) repository.Users {
+func NewUsersRepository(dbClient database.Client) repository.Users {
 	return &usersRepository{
-		pool,
+		dbClient,
 	}
 }
