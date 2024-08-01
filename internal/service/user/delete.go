@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// Delete is used to delete a user by its id
 func (u *usersService) Delete(ctx context.Context, userID int64) (int64, error) {
 	const op = "usersService.Delete:"
 

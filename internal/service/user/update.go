@@ -7,6 +7,7 @@ import (
 	"github.com/andredubov/auth/internal/service/model"
 )
 
+// Update a user information
 func (u *usersService) Update(ctx context.Context, updateUserInfo model.UpdateUserInfo) (int64, error) {
 	const op = "usersService.Update:"
 

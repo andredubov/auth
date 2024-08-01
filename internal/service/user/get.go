@@ -7,6 +7,7 @@ import (
 	"github.com/andredubov/auth/internal/service/model"
 )
 
+// GetByID gets a user by its id
 func (u *usersService) GetByID(ctx context.Context, userID int64) (model.User, error) {
 	const op = "usersService.GetByID:"
 

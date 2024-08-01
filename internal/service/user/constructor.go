@@ -13,6 +13,7 @@ type usersService struct {
 	txManager       database.TxManager
 }
 
+// NewService creates a instance of usersService struct
 func NewService(
 	usersRepository repository.Users,
 	hasher hasher.PasswordHasher,
