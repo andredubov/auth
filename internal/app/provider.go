@@ -34,6 +34,7 @@ func newServiceProvider() *serviceProvider {
 	return &serviceProvider{}
 }
 
+// AuthConfig loads auth config from appropriate enviroment variables
 func (s *serviceProvider) AuthConfig() config.AuthConfing {
 	if s.authConfig == nil {
 		cfg, err := env.NewAuthConfig()
@@ -47,6 +48,7 @@ func (s *serviceProvider) AuthConfig() config.AuthConfing {
 	return s.authConfig
 }
 
+// PostgresConfig loads postges config from appropriate enviroment variables
 func (s *serviceProvider) PostgresConfig() config.PostgresConfig {
 	if s.postgresConfig == nil {
 		cfg, err := env.NewPostgresConfig()
@@ -60,6 +62,7 @@ func (s *serviceProvider) PostgresConfig() config.PostgresConfig {
 	return s.postgresConfig
 }
 
+// GRPCConfig loads grpc config from appropriate enviroment variables
 func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
 		cfg, err := env.NewGRPCConfig()
@@ -73,6 +76,7 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	return s.grpcConfig
 }
 
+// PasswordHasher creates an instance of password hasher
 func (s *serviceProvider) PasswordHasher() hasher.PasswordHasher {
 	if s.passwordHasher == nil {
 		salt := s.AuthConfig().PasswordSalt()
@@ -82,6 +86,7 @@ func (s *serviceProvider) PasswordHasher() hasher.PasswordHasher {
 	return s.passwordHasher
 }
 
+// DatabaseClient creates an instance of database client
 func (s *serviceProvider) DatabaseClient(ctx context.Context) database.Client {
 	if s.databaseClient == nil {
 		dbClient, err := postgresClient.New(ctx, s.PostgresConfig().DSN())
@@ -104,6 +109,7 @@ func (s *serviceProvider) DatabaseClient(ctx context.Context) database.Client {
 	return s.databaseClient
 }
 
+// TxManager creates an instance of transaction managet
 func (s *serviceProvider) TxManager(ctx context.Context) database.TxManager {
 	if s.databaseTxManager == nil {
 		db := s.DatabaseClient(ctx).Database()
@@ -113,6 +119,7 @@ func (s *serviceProvider) TxManager(ctx context.Context) database.TxManager {
 	return s.databaseTxManager
 }
 
+// UsersRepository creates an instance of users repository
 func (s *serviceProvider) UsersRepository(ctx context.Context) repository.Users {
 	if s.usersRepository == nil {
 		dbClient := s.DatabaseClient(ctx)
@@ -122,6 +129,7 @@ func (s *serviceProvider) UsersRepository(ctx context.Context) repository.Users 
 	return s.usersRepository
 }
 
+// UsersService creates an instance of users service
 func (s *serviceProvider) UsersService(ctx context.Context) service.Users {
 	if s.usersService == nil {
 		usersRepository := s.UsersRepository(ctx)
@@ -133,6 +141,7 @@ func (s *serviceProvider) UsersService(ctx context.Context) service.Users {
 	return s.usersService
 }
 
+// ServerImplementation creates an instance of grpc server implementation
 func (s *serviceProvider) ServerImplementation(ctx context.Context) *server.Implementation {
 	if s.serverImplementation == nil {
 		usersService := s.UsersService(ctx)
