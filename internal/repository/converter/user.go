@@ -5,6 +5,7 @@ import (
 	"github.com/andredubov/auth/internal/service/model"
 )
 
+// ToUserFromRepo converts repository user model to service user model
 func ToUserFromRepo(user *modelRepo.User) model.User {
 	return model.User{
 		ID:        user.ID,
