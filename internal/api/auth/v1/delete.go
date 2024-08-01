@@ -11,8 +11,8 @@ import (
 
 func (i *Implementation) Delete(ctx context.Context, r *auth_v1.DeleteRequest) (*empty.Empty, error) {
 	if _, err := i.usersService.Delete(ctx, r.GetId()); err != nil {
-		return &empty.Empty{}, status.Error(codes.Internal, "failed to delete user")
+		return nil, status.Error(codes.Internal, "failed to delete user")
 	}
 
-	return &empty.Empty{}, nil
+	return nil, nil
 }
