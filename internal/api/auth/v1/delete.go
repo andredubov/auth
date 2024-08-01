@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Delete a user
 func (i *Implementation) Delete(ctx context.Context, r *auth_v1.DeleteRequest) (*empty.Empty, error) {
 	if _, err := i.usersService.Delete(ctx, r.GetId()); err != nil {
 		return nil, status.Error(codes.Internal, "failed to delete user")

@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Update a user information
 func (i *Implementation) Update(ctx context.Context, r *auth_v1.UpdateRequest) (*empty.Empty, error) {
 	if _, err := i.usersService.Update(ctx, converter.ToUserUpdateInfoFromUpdateRequest(r)); err != nil {
 		return nil, status.Error(codes.Internal, "failed to update user")

@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Get a user
 func (i *Implementation) Get(ctx context.Context, r *auth_v1.GetRequest) (*auth_v1.GetResponse, error) {
 	user, err := i.usersService.GetByID(ctx, r.GetId())
 	if err != nil {

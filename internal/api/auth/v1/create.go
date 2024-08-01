@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Create a new user
 func (i *Implementation) Create(ctx context.Context, r *auth_v1.CreateRequest) (*auth_v1.CreateResponse, error) {
 	if r.GetPassword() == "" {
 		return nil, status.Error(codes.InvalidArgument, "user password empty")
