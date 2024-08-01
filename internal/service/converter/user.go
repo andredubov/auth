@@ -6,6 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// ToUserFromCreateRequest converts grpc request to chat service layer model
 func ToUserFromCreateRequest(r *auth_v1.CreateRequest) model.User {
 	return model.User{
 		Name:            r.GetInfo().GetName(),
@@ -16,6 +17,7 @@ func ToUserFromCreateRequest(r *auth_v1.CreateRequest) model.User {
 	}
 }
 
+// ToUserUpdateInfoFromUpdateRequest converts grpc request to chat service layer model
 func ToUserUpdateInfoFromUpdateRequest(r *auth_v1.UpdateRequest) model.UpdateUserInfo {
 	updateUserInfo := model.UpdateUserInfo{ID: r.GetId()}
 
@@ -35,6 +37,7 @@ func ToUserUpdateInfoFromUpdateRequest(r *auth_v1.UpdateRequest) model.UpdateUse
 	return updateUserInfo
 }
 
+// ToUserFromService converts service layer model to grpc model
 func ToUserFromService(user model.User) *auth_v1.User {
 	var updatedAt *timestamppb.Timestamp
 	if user.UpdatedAt.Valid {
@@ -49,6 +52,7 @@ func ToUserFromService(user model.User) *auth_v1.User {
 	}
 }
 
+// ToUserInfoFromService converts service layer model to grpc server model
 func ToUserInfoFromService(user model.User) *auth_v1.UserInfo {
 	return &auth_v1.UserInfo{
 		Name:  user.Name,
