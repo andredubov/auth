@@ -21,12 +21,12 @@ func (u *usersRepository) Create(ctx context.Context, user model.User) (int64, e
 		return 0, err
 	}
 
-	var userID int64
-
 	q := database.Query{
 		Name:     "usersRepository.Create",
 		QueryRaw: query,
 	}
+
+	var userID int64
 
 	err = u.dbClient.Database().QueryRowContext(ctx, q, args...).Scan(&userID)
 	if err != nil {
