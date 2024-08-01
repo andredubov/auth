@@ -21,7 +21,8 @@ func (u *usersRepository) Create(ctx context.Context, user model.User) (int64, e
 		return 0, err
 	}
 
-	userID := int64(0)
+	var userID int64
+
 	q := database.Query{
 		Name:     "usersRepository.Create",
 		QueryRaw: query,
