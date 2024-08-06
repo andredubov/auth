@@ -15,5 +15,5 @@ func (i *Implementation) Delete(ctx context.Context, r *auth_v1.DeleteRequest) (
 		return nil, status.Error(codes.Internal, "failed to delete user")
 	}
 
-	return nil, nil
+	return &empty.Empty{}, nil
 }
