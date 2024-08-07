@@ -5,17 +5,17 @@ import (
 	"log"
 
 	server "github.com/andredubov/auth/internal/api/auth/v1"
-	"github.com/andredubov/auth/internal/client/database"
-	postgresClient "github.com/andredubov/auth/internal/client/database/postgres"
-	"github.com/andredubov/auth/internal/client/database/transaction"
-	"github.com/andredubov/auth/internal/closer"
 	"github.com/andredubov/auth/internal/config"
 	"github.com/andredubov/auth/internal/config/env"
 	"github.com/andredubov/auth/internal/repository"
 	postgres "github.com/andredubov/auth/internal/repository/postgres/user"
 	"github.com/andredubov/auth/internal/service"
 	"github.com/andredubov/auth/internal/service/user"
-	"github.com/andredubov/auth/pkg/hasher"
+	"github.com/andredubov/golibs/pkg/client/database"
+	postgresClient "github.com/andredubov/golibs/pkg/client/database/postgres"
+	"github.com/andredubov/golibs/pkg/client/database/transaction"
+	"github.com/andredubov/golibs/pkg/closer"
+	"github.com/andredubov/golibs/pkg/hasher"
 )
 
 type serviceProvider struct {
