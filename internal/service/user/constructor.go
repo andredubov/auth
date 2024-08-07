@@ -1,10 +1,10 @@
 package user
 
 import (
-	"github.com/andredubov/auth/internal/client/database"
 	"github.com/andredubov/auth/internal/repository"
 	"github.com/andredubov/auth/internal/service"
-	"github.com/andredubov/auth/pkg/hasher"
+	"github.com/andredubov/golibs/pkg/client/database"
+	"github.com/andredubov/golibs/pkg/hasher"
 )
 
 type usersService struct {
