@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/andredubov/auth/internal/client/database"
+	"github.com/andredubov/golibs/pkg/client/database"
 )
 
 // Delete a user from the repository

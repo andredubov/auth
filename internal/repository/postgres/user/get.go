@@ -5,11 +5,11 @@ import (
 	"errors"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/andredubov/auth/internal/client/database"
 	"github.com/andredubov/auth/internal/repository"
 	"github.com/andredubov/auth/internal/repository/converter"
 	modelRepo "github.com/andredubov/auth/internal/repository/model"
 	"github.com/andredubov/auth/internal/service/model"
+	"github.com/andredubov/golibs/pkg/client/database"
 	"github.com/jackc/pgx/v4"
 )
 
