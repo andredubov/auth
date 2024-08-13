@@ -13,7 +13,7 @@ func (u *usersRepository) Create(ctx context.Context, user model.User) (int64, e
 	insertBuilder := sq.Insert(usersTable).
 		PlaceholderFormat(sq.Dollar).
 		Columns(nameUsersTableColumn, emailUsersTableColumn, passhashUsersTableColumn, roleUsersTableColumn).
-		Values(user.Name, user.Email, user.Password, user.UserRole).
+		Values(user.Name, user.Email, user.Password, user.Role).
 		Suffix("RETURNING id")
 
 	query, args, err := insertBuilder.ToSql()

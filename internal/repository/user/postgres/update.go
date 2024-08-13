@@ -22,8 +22,8 @@ func (u *usersRepository) Update(ctx context.Context, userInfo model.UpdateUserI
 		updateBuilder = updateBuilder.Set(emailUsersTableColumn, userInfo.Email)
 	}
 
-	if userInfo.UserRole != nil {
-		updateBuilder = updateBuilder.Set(roleUsersTableColumn, userInfo.UserRole)
+	if userInfo.Role != nil {
+		updateBuilder = updateBuilder.Set(roleUsersTableColumn, userInfo.Role)
 	}
 
 	updateBuilder = updateBuilder.Set(updatedAtUsersTableColumn, time.Now()).Where(sq.Eq{idUsersTabelColumn: userInfo.ID})

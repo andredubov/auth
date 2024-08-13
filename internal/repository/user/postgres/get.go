@@ -14,7 +14,7 @@ import (
 )
 
 // Get a user by its email from the repository
-func (u *usersRepository) GetByID(ctx context.Context, userID int64) (model.User, error) {
+func (u *usersRepository) GetByID(ctx context.Context, userID int64) (*model.User, error) {
 	queryBuilder := sq.Select(
 		idUsersTabelColumn,
 		nameUsersTableColumn,
@@ -30,7 +30,7 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (model.User
 
 	query, args, err := queryBuilder.ToSql()
 	if err != nil {
-		return model.User{}, err
+		return nil, err
 	}
 
 	q := database.Query{
@@ -38,15 +38,15 @@ func (u *usersRepository) GetByID(ctx context.Context, userID int64) (model.User
 		QueryRaw: query,
 	}
 
-	user := modelRepo.User{}
-	err = u.dbClient.Database().ScanOneContext(ctx, &user, q, args...)
+	user := new(modelRepo.User)
+	err = u.dbClient.Database().ScanOneContext(ctx, user, q, args...)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return model.User{}, repository.ErrUserNotFound
+			return nil, repository.ErrUserNotFound
 		}
-		return model.User{}, err
+		return nil, err
 	}
 
-	return converter.ToUserFromRepo(&user), nil
+	return converter.ToUserFromRepo(user), nil
 }

@@ -31,7 +31,7 @@ type UsersMock struct {
 	beforeDeleteCounter uint64
 	DeleteMock          mUsersMockDelete
 
-	funcGetByID          func(ctx context.Context, userID int64) (u1 model.User, err error)
+	funcGetByID          func(ctx context.Context, userID int64) (up1 *model.User, err error)
 	inspectFuncGetByID   func(ctx context.Context, userID int64)
 	afterGetByIDCounter  uint64
 	beforeGetByIDCounter uint64
@@ -746,7 +746,7 @@ type UsersMockGetByIDParamPtrs struct {
 
 // UsersMockGetByIDResults contains results of the Users.GetByID
 type UsersMockGetByIDResults struct {
-	u1  model.User
+	up1 *model.User
 	err error
 }
 
@@ -840,7 +840,7 @@ func (mmGetByID *mUsersMockGetByID) Inspect(f func(ctx context.Context, userID i
 }
 
 // Return sets up results that will be returned by Users.GetByID
-func (mmGetByID *mUsersMockGetByID) Return(u1 model.User, err error) *UsersMock {
+func (mmGetByID *mUsersMockGetByID) Return(up1 *model.User, err error) *UsersMock {
 	if mmGetByID.mock.funcGetByID != nil {
 		mmGetByID.mock.t.Fatalf("UsersMock.GetByID mock is already set by Set")
 	}
@@ -848,12 +848,12 @@ func (mmGetByID *mUsersMockGetByID) Return(u1 model.User, err error) *UsersMock 
 	if mmGetByID.defaultExpectation == nil {
 		mmGetByID.defaultExpectation = &UsersMockGetByIDExpectation{mock: mmGetByID.mock}
 	}
-	mmGetByID.defaultExpectation.results = &UsersMockGetByIDResults{u1, err}
+	mmGetByID.defaultExpectation.results = &UsersMockGetByIDResults{up1, err}
 	return mmGetByID.mock
 }
 
 // Set uses given function f to mock the Users.GetByID method
-func (mmGetByID *mUsersMockGetByID) Set(f func(ctx context.Context, userID int64) (u1 model.User, err error)) *UsersMock {
+func (mmGetByID *mUsersMockGetByID) Set(f func(ctx context.Context, userID int64) (up1 *model.User, err error)) *UsersMock {
 	if mmGetByID.defaultExpectation != nil {
 		mmGetByID.mock.t.Fatalf("Default expectation is already set for the Users.GetByID method")
 	}
@@ -882,8 +882,8 @@ func (mmGetByID *mUsersMockGetByID) When(ctx context.Context, userID int64) *Use
 }
 
 // Then sets up Users.GetByID return parameters for the expectation previously defined by the When method
-func (e *UsersMockGetByIDExpectation) Then(u1 model.User, err error) *UsersMock {
-	e.results = &UsersMockGetByIDResults{u1, err}
+func (e *UsersMockGetByIDExpectation) Then(up1 *model.User, err error) *UsersMock {
+	e.results = &UsersMockGetByIDResults{up1, err}
 	return e.mock
 }
 
@@ -908,7 +908,7 @@ func (mmGetByID *mUsersMockGetByID) invocationsDone() bool {
 }
 
 // GetByID implements repository.Users
-func (mmGetByID *UsersMock) GetByID(ctx context.Context, userID int64) (u1 model.User, err error) {
+func (mmGetByID *UsersMock) GetByID(ctx context.Context, userID int64) (up1 *model.User, err error) {
 	mm_atomic.AddUint64(&mmGetByID.beforeGetByIDCounter, 1)
 	defer mm_atomic.AddUint64(&mmGetByID.afterGetByIDCounter, 1)
 
@@ -926,7 +926,7 @@ func (mmGetByID *UsersMock) GetByID(ctx context.Context, userID int64) (u1 model
 	for _, e := range mmGetByID.GetByIDMock.expectations {
 		if minimock.Equal(*e.params, mm_params) {
 			mm_atomic.AddUint64(&e.Counter, 1)
-			return e.results.u1, e.results.err
+			return e.results.up1, e.results.err
 		}
 	}
 
@@ -955,7 +955,7 @@ func (mmGetByID *UsersMock) GetByID(ctx context.Context, userID int64) (u1 model
 		if mm_results == nil {
 			mmGetByID.t.Fatal("No results are set for the UsersMock.GetByID")
 		}
-		return (*mm_results).u1, (*mm_results).err
+		return (*mm_results).up1, (*mm_results).err
 	}
 	if mmGetByID.funcGetByID != nil {
 		return mmGetByID.funcGetByID(ctx, userID)
