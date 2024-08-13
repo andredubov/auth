@@ -5,16 +5,20 @@ import (
 	"log"
 
 	server "github.com/andredubov/auth/internal/api/auth/v1"
-	"github.com/andredubov/auth/internal/config"
-	"github.com/andredubov/auth/internal/config/env"
+	"github.com/andredubov/auth/internal/cache"
+	"github.com/andredubov/auth/internal/cache/user/redis"
 	"github.com/andredubov/auth/internal/repository"
-	postgres "github.com/andredubov/auth/internal/repository/postgres/user"
+	postgres "github.com/andredubov/auth/internal/repository/user/postgres"
 	"github.com/andredubov/auth/internal/service"
 	"github.com/andredubov/auth/internal/service/user"
+	cacheCl "github.com/andredubov/golibs/pkg/client/cache"
+	redisClient "github.com/andredubov/golibs/pkg/client/cache/redis"
 	"github.com/andredubov/golibs/pkg/client/database"
 	postgresClient "github.com/andredubov/golibs/pkg/client/database/postgres"
 	"github.com/andredubov/golibs/pkg/client/database/transaction"
 	"github.com/andredubov/golibs/pkg/closer"
+	"github.com/andredubov/golibs/pkg/config"
+	"github.com/andredubov/golibs/pkg/config/env"
 	"github.com/andredubov/golibs/pkg/hasher"
 )
 
@@ -22,10 +26,13 @@ type serviceProvider struct {
 	postgresConfig       config.PostgresConfig
 	authConfig           config.AuthConfing
 	grpcConfig           config.GRPCConfig
+	redisConfig          config.RedisConfig
 	passwordHasher       hasher.PasswordHasher
 	databaseClient       database.Client
 	databaseTxManager    database.TxManager
 	usersRepository      repository.Users
+	cacheClient          cacheCl.Client
+	usersCache           cache.Users
 	usersService         service.Users
 	serverImplementation *server.Implementation
 }
@@ -60,6 +67,19 @@ func (s *serviceProvider) PostgresConfig() config.PostgresConfig {
 	}
 
 	return s.postgresConfig
+}
+
+// RedisConfig loads postges config from appropriate enviroment variables
+func (s *serviceProvider) RedisConfig() config.RedisConfig {
+	if s.redisConfig == nil {
+		cfg, err := env.NewRedisConfig()
+		if err != nil {
+			log.Fatalf("failed to get redis config: %s", err.Error())
+		}
+
+		s.redisConfig = cfg
+	}
+	return s.redisConfig
 }
 
 // GRPCConfig loads grpc config from appropriate enviroment variables
@@ -109,6 +129,29 @@ func (s *serviceProvider) DatabaseClient(ctx context.Context) database.Client {
 	return s.databaseClient
 }
 
+// CacheClient creates an instance of cache client
+func (s *serviceProvider) CacheClient(ctx context.Context) cacheCl.Client {
+	if s.cacheClient == nil {
+		client, err := redisClient.New(ctx, s.RedisConfig())
+		if err != nil {
+			log.Fatalf("failed to connect to cache: %v", err)
+		}
+
+		if err := client.Cache().Ping(ctx); err != nil {
+			log.Fatalf("cache ping error: %v", err)
+		}
+
+		closer.Add(func() error {
+			client.Cache().Close()
+			return nil
+		})
+
+		s.cacheClient = client
+	}
+
+	return s.cacheClient
+}
+
 // TxManager creates an instance of transaction managet
 func (s *serviceProvider) TxManager(ctx context.Context) database.TxManager {
 	if s.databaseTxManager == nil {
@@ -129,13 +172,25 @@ func (s *serviceProvider) UsersRepository(ctx context.Context) repository.Users 
 	return s.usersRepository
 }
 
+// UsersCache creates an instance of users repository
+func (s *serviceProvider) UsersCache(ctx context.Context) cache.Users {
+	if s.usersCache == nil {
+		cacheClient := s.CacheClient(ctx)
+		s.usersCache = redis.NewUsersCache(cacheClient)
+	}
+
+	return s.usersCache
+}
+
 // UsersService creates an instance of users service
 func (s *serviceProvider) UsersService(ctx context.Context) service.Users {
 	if s.usersService == nil {
-		usersRepository := s.UsersRepository(ctx)
-		passwordHasher := s.PasswordHasher()
-		txManager := s.TxManager(ctx)
-		s.usersService = user.NewService(usersRepository, passwordHasher, txManager)
+		s.usersService = user.NewService(
+			s.UsersRepository(ctx),
+			s.PasswordHasher(),
+			s.UsersCache(ctx),
+			s.TxManager(ctx),
+		)
 	}
 
 	return s.usersService

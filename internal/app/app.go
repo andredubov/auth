@@ -5,9 +5,9 @@ import (
 	"log"
 	"net"
 
-	"github.com/andredubov/auth/internal/config"
 	auth_v1 "github.com/andredubov/auth/pkg/auth/v1"
 	"github.com/andredubov/golibs/pkg/closer"
+	"github.com/andredubov/golibs/pkg/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
