@@ -10,10 +10,25 @@ import (
 // Update a user information
 func (u *usersService) Update(ctx context.Context, updateUserInfo model.UpdateUserInfo) (int64, error) {
 	const op = "usersService.Update:"
+	var id int64
+	err := u.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
+		var errTx error
+		id, errTx = u.usersRepository.Update(ctx, updateUserInfo)
+		if errTx != nil {
+			log.Printf("%s: %s", op, errTx)
+			return errTx
+		}
 
-	id, err := u.usersRepository.Update(ctx, updateUserInfo)
+		errTx = u.usersCache.Delete(ctx, updateUserInfo.ID)
+		if errTx != nil {
+			log.Printf("%s: %s", op, errTx)
+			return errTx
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		log.Printf("%s: %s", op, err)
 		return 0, err
 	}
 

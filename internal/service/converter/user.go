@@ -11,7 +11,7 @@ func ToUserFromCreateRequest(r *auth_v1.CreateRequest) model.User {
 	return model.User{
 		Name:            r.GetInfo().GetName(),
 		Email:           r.GetInfo().GetEmail(),
-		UserRole:        int(r.GetInfo().GetRole()),
+		Role:            model.Role(r.GetInfo().GetRole()),
 		Password:        r.GetPassword(),
 		PasswordConfirm: r.GetPasswordConfirm(),
 	}
@@ -30,15 +30,15 @@ func ToUserUpdateInfoFromUpdateRequest(r *auth_v1.UpdateRequest) model.UpdateUse
 	}
 
 	if r.GetInfo().GetRole() != auth_v1.UserRole_UNKNOWN {
-		role := int(r.GetInfo().GetRole())
-		updateUserInfo.UserRole = &role
+		role := model.Role(r.GetInfo().GetRole())
+		updateUserInfo.Role = &role
 	}
 
 	return updateUserInfo
 }
 
 // ToUserFromService converts service layer model to grpc model
-func ToUserFromService(user model.User) *auth_v1.User {
+func ToUserFromService(user *model.User) *auth_v1.User {
 	var updatedAt *timestamppb.Timestamp
 	if user.UpdatedAt.Valid {
 		updatedAt = timestamppb.New(user.UpdatedAt.Time)
@@ -53,10 +53,10 @@ func ToUserFromService(user model.User) *auth_v1.User {
 }
 
 // ToUserInfoFromService converts service layer model to grpc server model
-func ToUserInfoFromService(user model.User) *auth_v1.UserInfo {
+func ToUserInfoFromService(user *model.User) *auth_v1.UserInfo {
 	return &auth_v1.UserInfo{
 		Name:  user.Name,
 		Email: user.Email,
-		Role:  auth_v1.UserRole(user.UserRole),
+		Role:  auth_v1.UserRole(user.Role),
 	}
 }
