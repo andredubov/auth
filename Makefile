@@ -21,6 +21,7 @@ get-deps:
 	go get -u github.com/joho/godotenv
 	go get -u github.com/jackc/pgx/v4
 	go get -u github.com/Masterminds/squirrel
+	go get -u github.com/andredubov/golibs
 
 generate:
 	make generate-auth-api
