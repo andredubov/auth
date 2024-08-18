@@ -8,7 +8,7 @@ import (
 	"github.com/andredubov/auth/internal/service/model"
 )
 
-func (u *usersCache) Create(ctx context.Context, user *model.User) error {
+func (u *usersCache) Create(ctx context.Context, user model.User) error {
 	userCache := converter.ToUserCacheFromModel(user)
 	hash := strconv.FormatInt(userCache.ID, 10)
 

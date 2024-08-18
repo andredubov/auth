@@ -8,7 +8,7 @@ import (
 	"github.com/andredubov/auth/internal/service/model"
 )
 
-func ToUserCacheFromModel(user *model.User) *modelCache.User {
+func ToUserCacheFromModel(user model.User) *modelCache.User {
 	var updatedAtNs *int64
 	if user.UpdatedAt.Valid {
 		updatedAtNs = new(int64)

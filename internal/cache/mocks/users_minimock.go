@@ -19,8 +19,8 @@ type UsersMock struct {
 	t          minimock.Tester
 	finishOnce sync.Once
 
-	funcCreate          func(ctx context.Context, user *model.User) (err error)
-	inspectFuncCreate   func(ctx context.Context, user *model.User)
+	funcCreate          func(ctx context.Context, user model.User) (err error)
+	inspectFuncCreate   func(ctx context.Context, user model.User)
 	afterCreateCounter  uint64
 	beforeCreateCounter uint64
 	CreateMock          mUsersMockCreate
@@ -84,13 +84,13 @@ type UsersMockCreateExpectation struct {
 // UsersMockCreateParams contains parameters of the Users.Create
 type UsersMockCreateParams struct {
 	ctx  context.Context
-	user *model.User
+	user model.User
 }
 
 // UsersMockCreateParamPtrs contains pointers to parameters of the Users.Create
 type UsersMockCreateParamPtrs struct {
 	ctx  *context.Context
-	user **model.User
+	user *model.User
 }
 
 // UsersMockCreateResults contains results of the Users.Create
@@ -109,7 +109,7 @@ func (mmCreate *mUsersMockCreate) Optional() *mUsersMockCreate {
 }
 
 // Expect sets up expected params for Users.Create
-func (mmCreate *mUsersMockCreate) Expect(ctx context.Context, user *model.User) *mUsersMockCreate {
+func (mmCreate *mUsersMockCreate) Expect(ctx context.Context, user model.User) *mUsersMockCreate {
 	if mmCreate.mock.funcCreate != nil {
 		mmCreate.mock.t.Fatalf("UsersMock.Create mock is already set by Set")
 	}
@@ -155,7 +155,7 @@ func (mmCreate *mUsersMockCreate) ExpectCtxParam1(ctx context.Context) *mUsersMo
 }
 
 // ExpectUserParam2 sets up expected param user for Users.Create
-func (mmCreate *mUsersMockCreate) ExpectUserParam2(user *model.User) *mUsersMockCreate {
+func (mmCreate *mUsersMockCreate) ExpectUserParam2(user model.User) *mUsersMockCreate {
 	if mmCreate.mock.funcCreate != nil {
 		mmCreate.mock.t.Fatalf("UsersMock.Create mock is already set by Set")
 	}
@@ -177,7 +177,7 @@ func (mmCreate *mUsersMockCreate) ExpectUserParam2(user *model.User) *mUsersMock
 }
 
 // Inspect accepts an inspector function that has same arguments as the Users.Create
-func (mmCreate *mUsersMockCreate) Inspect(f func(ctx context.Context, user *model.User)) *mUsersMockCreate {
+func (mmCreate *mUsersMockCreate) Inspect(f func(ctx context.Context, user model.User)) *mUsersMockCreate {
 	if mmCreate.mock.inspectFuncCreate != nil {
 		mmCreate.mock.t.Fatalf("Inspect function is already set for UsersMock.Create")
 	}
@@ -201,7 +201,7 @@ func (mmCreate *mUsersMockCreate) Return(err error) *UsersMock {
 }
 
 // Set uses given function f to mock the Users.Create method
-func (mmCreate *mUsersMockCreate) Set(f func(ctx context.Context, user *model.User) (err error)) *UsersMock {
+func (mmCreate *mUsersMockCreate) Set(f func(ctx context.Context, user model.User) (err error)) *UsersMock {
 	if mmCreate.defaultExpectation != nil {
 		mmCreate.mock.t.Fatalf("Default expectation is already set for the Users.Create method")
 	}
@@ -216,7 +216,7 @@ func (mmCreate *mUsersMockCreate) Set(f func(ctx context.Context, user *model.Us
 
 // When sets expectation for the Users.Create which will trigger the result defined by the following
 // Then helper
-func (mmCreate *mUsersMockCreate) When(ctx context.Context, user *model.User) *UsersMockCreateExpectation {
+func (mmCreate *mUsersMockCreate) When(ctx context.Context, user model.User) *UsersMockCreateExpectation {
 	if mmCreate.mock.funcCreate != nil {
 		mmCreate.mock.t.Fatalf("UsersMock.Create mock is already set by Set")
 	}
@@ -256,7 +256,7 @@ func (mmCreate *mUsersMockCreate) invocationsDone() bool {
 }
 
 // Create implements cache.Users
-func (mmCreate *UsersMock) Create(ctx context.Context, user *model.User) (err error) {
+func (mmCreate *UsersMock) Create(ctx context.Context, user model.User) (err error) {
 	mm_atomic.AddUint64(&mmCreate.beforeCreateCounter, 1)
 	defer mm_atomic.AddUint64(&mmCreate.afterCreateCounter, 1)
 
