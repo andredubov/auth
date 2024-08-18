@@ -12,6 +12,7 @@ func (u *usersService) Create(ctx context.Context, user model.User) (int64, erro
 	const op = "usersService.Create:"
 	var id int64
 	err := u.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
+		var errTx error
 		hashedPassword, errTx := u.hasher.HashAndSalt(user.Password)
 		if errTx != nil {
 			log.Printf("%s: %s", op, errTx)
@@ -26,7 +27,9 @@ func (u *usersService) Create(ctx context.Context, user model.User) (int64, erro
 			return errTx
 		}
 
-		errTx = u.usersCache.Create(ctx, &user)
+		user.ID = id
+
+		errTx = u.usersCache.Create(ctx, user)
 		if errTx != nil {
 			log.Printf("%s: %s", op, errTx)
 			return errTx

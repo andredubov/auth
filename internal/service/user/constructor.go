@@ -23,9 +23,9 @@ func NewService(
 	txManager database.TxManager,
 ) service.Users {
 	return &usersService{
-		usersRepository,
-		hasher,
-		usersCache,
-		txManager,
+		usersRepository: usersRepository,
+		hasher:          hasher,
+		usersCache:      usersCache,
+		txManager:       txManager,
 	}
 }

@@ -21,7 +21,7 @@ func (u *usersService) GetByID(ctx context.Context, userID int64) (*model.User, 
 				return errTx
 			}
 
-			errTx = u.usersCache.Create(ctx, user)
+			errTx = u.usersCache.Create(ctx, *user)
 			if errTx != nil {
 				log.Printf("%s: %s", op, errTx)
 				return errTx
