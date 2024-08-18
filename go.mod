@@ -5,7 +5,7 @@ go 1.22.1
 require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/andredubov/golibs v0.0.0-20240811194256-9c9165539232
-	github.com/brianvoe/gofakeit v3.18.0+incompatible
+	github.com/brianvoe/gofakeit/v6 v6.28.0
 	github.com/dvln/testify v0.0.0-20161024040450-c9680faee19e
 	github.com/gojuno/minimock/v3 v3.3.14
 	github.com/golang/protobuf v1.5.4
