@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Role is a user role type
 type Role int32
 
 // User repository layer user model
