@@ -142,8 +142,7 @@ func (s *serviceProvider) CacheClient(ctx context.Context) cacheCl.Client {
 		}
 
 		closer.Add(func() error {
-			client.Cache().Close()
-			return nil
+			return client.Cache().Close()
 		})
 
 		s.cacheClient = client
