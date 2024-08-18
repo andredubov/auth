@@ -2,7 +2,7 @@ package tests
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"testing"
 
 	"github.com/andredubov/auth/internal/cache"
@@ -15,7 +15,7 @@ import (
 	dbMocks "github.com/andredubov/golibs/pkg/client/database/mocks"
 	"github.com/andredubov/golibs/pkg/hasher"
 	hasherMocks "github.com/andredubov/golibs/pkg/hasher/mocks"
-	"github.com/brianvoe/gofakeit"
+	"github.com/brianvoe/gofakeit/v6"
 	"github.com/dvln/testify/require"
 	"github.com/gojuno/minimock/v3"
 )
@@ -25,7 +25,7 @@ func TestCreateUser(t *testing.T) {
 	type usersRepositoryMockFunc func(mc *minimock.Controller) repository.Users
 	type passwordHasherMockFunc func(mc *minimock.Controller) hasher.PasswordHasher
 	type usersCacheMockFunc func(mc *minimock.Controller) cache.Users
-	type txManagerMockFunc func(f func(context.Context) error, mc *minimock.Controller) database.TxManager
+	type txManagerMockFunc func(mc *minimock.Controller) database.TxManager
 
 	type args struct {
 		ctx context.Context
@@ -34,29 +34,35 @@ func TestCreateUser(t *testing.T) {
 
 	var (
 		ctx             = context.Background()
-		controller      = minimock.NewController(t)
-		repositoryError = fmt.Errorf("repo error")
+		mc              = minimock.NewController(t)
+		repositoryError = errors.New("repo error")
 		id              = gofakeit.Int64()
 		name            = gofakeit.Name()
 		email           = gofakeit.Email()
-		role            = model.Role(1)
+		role            = model.Role(gofakeit.IntRange(1, 2))
 		plainPassword   = gofakeit.Password(true, true, true, true, false, 10)
 		hashedPassword  = gofakeit.Password(true, true, true, true, false, 10)
 
 		request = model.User{
-			ID:              id,
-			Name:            name,
-			Email:           email,
-			Role:            role,
-			Password:        plainPassword,
-			PasswordConfirm: plainPassword,
+			Name:     name,
+			Email:    email,
+			Role:     role,
+			Password: plainPassword,
+		}
+
+		repoUser = model.User{
+			Name:     name,
+			Email:    email,
+			Role:     role,
+			Password: hashedPassword,
 		}
 
 		cacheUser = model.User{
-			ID:    id,
-			Name:  name,
-			Email: email,
-			Role:  role,
+			ID:       id,
+			Name:     name,
+			Email:    email,
+			Role:     role,
+			Password: hashedPassword,
 		}
 	)
 
@@ -85,17 +91,19 @@ func TestCreateUser(t *testing.T) {
 			},
 			usersRepositoryMock: func(mc *minimock.Controller) repository.Users {
 				mock := repoMocks.NewUsersMock(mc)
-				mock.CreateMock.Expect(ctx, request).Return(id, nil)
+				mock.CreateMock.Expect(ctx, repoUser).Return(id, nil)
 				return mock
 			},
 			usersCacheMock: func(mc *minimock.Controller) cache.Users {
 				mock := cacheMocks.NewUsersMock(mc)
-				mock.CreateMock.Expect(ctx, &cacheUser).Return(nil)
+				mock.CreateMock.Expect(ctx, cacheUser).Return(nil)
 				return mock
 			},
-			txManagerMock: func(f func(context.Context) error, mc *minimock.Controller) database.TxManager {
+			txManagerMock: func(mc *minimock.Controller) database.TxManager {
 				mock := dbMocks.NewTxManagerMock(mc)
-				mock.ReadCommittedMock.Expect(ctx, f).Return(nil)
+				mock.ReadCommittedMock.Set(func(ctx context.Context, f database.Handler) (err error) {
+					return f(ctx)
+				})
 				return mock
 			},
 		},
@@ -114,17 +122,18 @@ func TestCreateUser(t *testing.T) {
 			},
 			usersRepositoryMock: func(mc *minimock.Controller) repository.Users {
 				mock := repoMocks.NewUsersMock(mc)
-				mock.CreateMock.Expect(ctx, request).Return(0, repositoryError)
+				mock.CreateMock.Expect(ctx, repoUser).Return(0, repositoryError)
 				return mock
 			},
 			usersCacheMock: func(mc *minimock.Controller) cache.Users {
 				mock := cacheMocks.NewUsersMock(mc)
-				mock.CreateMock.Expect(ctx, &cacheUser).Return(nil)
 				return mock
 			},
-			txManagerMock: func(f func(context.Context) error, mc *minimock.Controller) database.TxManager {
+			txManagerMock: func(mc *minimock.Controller) database.TxManager {
 				mock := dbMocks.NewTxManagerMock(mc)
-				mock.ReadCommittedMock.Expect(ctx, f).Return(nil)
+				mock.ReadCommittedMock.Set(func(ctx context.Context, f database.Handler) error {
+					return f(ctx)
+				})
 				return mock
 			},
 		},
@@ -134,30 +143,10 @@ func TestCreateUser(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			usersRepositoryMock := tt.usersRepositoryMock(controller)
-			usersCacheMock := tt.usersCacheMock(controller)
-			passwordHasherMock := tt.passwordHasherMock(controller)
-			txManagerMock := tt.txManagerMock(func(ctx context.Context) error {
-				var errTx error
-				hashedPassword, errTx := passwordHasherMock.HashAndSalt(request.Password)
-				if errTx != nil {
-					return errTx
-				}
-
-				request.Password = hashedPassword
-
-				id, errTx = usersRepositoryMock.Create(ctx, request)
-				if errTx != nil {
-					return errTx
-				}
-
-				errTx = usersCacheMock.Create(ctx, &cacheUser)
-				if errTx != nil {
-					return errTx
-				}
-
-				return nil
-			}, controller)
+			passwordHasherMock := tt.passwordHasherMock(mc)
+			usersRepositoryMock := tt.usersRepositoryMock(mc)
+			usersCacheMock := tt.usersCacheMock(mc)
+			txManagerMock := tt.txManagerMock(mc)
 
 			service := user.NewService(
 				usersRepositoryMock,
@@ -166,9 +155,9 @@ func TestCreateUser(t *testing.T) {
 				txManagerMock,
 			)
 
-			id, err := service.Create(tt.args.ctx, tt.args.req)
+			newID, err := service.Create(tt.args.ctx, tt.args.req)
 			require.Equal(t, tt.err, err)
-			require.Equal(t, tt.want, id)
+			require.Equal(t, tt.want, newID)
 		})
 	}
 }
