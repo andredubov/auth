@@ -29,6 +29,19 @@ generate:
 genearate-mocks:
 	go generate ./...
 
+test:	
+	go clean -testcache
+	go test ./... -covermode count -coverpkg=github.com/andredubov/auth/internal/service/...,github.com/andredubov/auth/internal/api/... -count 5
+
+test-coverage:
+	go clean -testcache
+	go test ./... -coverprofile=coverage.tmp.out -covermode count -coverpkg=github.com/andredubov/auth/internal/service/...,github.com/andredubov/auth/internal/api/... -count 5
+	grep -v 'mocks\|config' coverage.tmp.out  > coverage.out
+	rm coverage.tmp.out
+	go tool cover -html=coverage.out;
+	go tool cover -func=./coverage.out | grep "total";
+	grep -sqFx "/coverage.out" .gitignore || echo "/coverage.out" >> .gitignore
+
 generate-auth-api:
 	mkdir -p ./pkg/auth/v1
 	protoc --proto_path=./api/auth/v1 --go_out=./pkg/auth/v1 \
