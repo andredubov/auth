@@ -8,6 +8,8 @@ env:
     MIGRATOR_IMAGE: "andreidubov/auth-migrator"
     POSTGRES_IMAGE: "postgres"
     POSTGRES_TAG: "14-alpine3.17"
+    REDIS_IMAGE: "redis"
+    REDIS_TAG: "7-alpine3.20"
 jobs:
   lint:
     name: lint
@@ -99,7 +101,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: AUTH_IMAGE,MIGRATOR_IMAGE,POSTGRES_IMAGE,POSTGRES_TAG, TAG
+          envs: AUTH_IMAGE,MIGRATOR_IMAGE,POSTGRES_IMAGE,POSTGRES_TAG,REDIS_IMAGE,REDIS_TAG, TAG
           script: | 
             # Set env variables for the docker-compose file
             export TAG=$(echo $TAG)
@@ -107,6 +109,8 @@ jobs:
             export MIGRATOR_IMAGE=$(echo $MIGRATOR_IMAGE)
             export POSTGRES_IMAGE=$(echo $POSTGRES_IMAGE)
             export POSTGRES_TAG=$(echo $POSTGRES_TAG)
+            export REDIS_IMAGE=$(echo $REDIS_IMAGE)
+            export REDIS_TAG=$(echo $REDIS_TAG)
 
             # Create .env file
             mkdir -p ./auth/config
@@ -121,7 +125,13 @@ jobs:
             echo "MIGRATION_DIR=${{ secrets.MIGRATION_DIR }}" >> ./auth/config/.env
             echo "GRPC_HOST=${{ secrets.GRPC_HOST }}" >> ./auth/config/.env
             echo "GRPC_PORT=${{ secrets.GRPC_PORT }}" >> ./auth/config/.env
-            echo "PASSWORD_SALT=${{ secrets.PASSWORD_SALT }}" >> ./auth/config/.env
+            echo "PASSWORD_SALT=${{ secrets.PASSWORD_SALT }}" >> ./auth/config/.env                      
+            echo "RD_HOST=${{ secrets.REDIS_HOST }}" >> ./auth/config/.env
+            echo "RD_PORT=${{ secrets.REDIS_PORT }}" >> ./auth/config/.env
+            echo "RD_PORT_OUT=${{ secrets.REDIS_PORT_OUT }}" >> ./auth/config/.env
+            echo "RD_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }}" >> ./auth/config/.env
+            echo "RD_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }}" >> ./auth/config/.env
+            echo "RD_MAX_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_MAX_IDLE_TIMEOUT_SEC }}" >> ./auth/config/.env
 
             # Login into DockerHub
             # echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin

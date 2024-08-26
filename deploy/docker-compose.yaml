@@ -1,5 +1,6 @@
 volumes:
   auth_postgres_volume:
+  auth_redis_volume:
 services:
   auth-postgres:
     image: ${POSTGRES_IMAGE}:${POSTGRES_TAG}
@@ -21,6 +22,22 @@ services:
     networks:
       authnet:
         ipv4_address: 172.19.0.2
+  auth-redis:
+    image: ${REDIS_IMAGE}:${REDIS_TAG}
+    container_name: auth_redis
+    ports:
+      - ${RD_PORT_OUT}:${RD_PORT}
+    volumes:
+      - auth_redis_volume:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+    networks:
+      authnet:
+        ipv4_address: 172.19.0.3
   auth-server:
     image: ${AUTH_IMAGE}:${TAG}
     container_name: auth_server
@@ -33,7 +50,7 @@ services:
         condition: service_healthy
     networks:
       authnet:
-        ipv4_address: 172.19.0.3
+        ipv4_address: 172.19.0.4
   auth-migrator:
     image: ${MIGRATOR_IMAGE}:${TAG}
     container_name: auth_migrator
@@ -45,7 +62,7 @@ services:
         condition: service_healthy
     networks:
       authnet:
-        ipv4_address: 172.19.0.4
+        ipv4_address: 172.19.0.5
 networks:
   authnet:
     driver: bridge
