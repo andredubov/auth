@@ -6,12 +6,12 @@ import (
 )
 
 // ToUserFromRepo converts repository user model to service user model
-func ToUserFromRepo(user *modelRepo.User) model.User {
-	return model.User{
+func ToUserFromRepo(user *modelRepo.User) *model.User {
+	return &model.User{
 		ID:        user.ID,
 		Name:      user.Name,
 		Email:     user.Email,
-		UserRole:  user.UserRole,
+		Role:      model.Role(user.Role),
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}

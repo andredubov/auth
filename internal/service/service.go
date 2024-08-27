@@ -12,10 +12,10 @@ var (
 	ErrUserNotFound = errors.New("user not found")
 )
 
-// Users users repository interface
+// Users interface for working with a users service
 type Users interface {
 	Create(ctx context.Context, user model.User) (int64, error)
-	GetByID(ctx context.Context, userID int64) (model.User, error)
+	GetByID(ctx context.Context, userID int64) (*model.User, error)
 	Update(ctx context.Context, updateUserInfo model.UpdateUserInfo) (int64, error)
 	Delete(ctx context.Context, userID int64) (int64, error)
 }

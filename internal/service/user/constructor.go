@@ -1,15 +1,17 @@
 package user
 
 import (
-	"github.com/andredubov/auth/internal/client/database"
+	"github.com/andredubov/auth/internal/cache"
 	"github.com/andredubov/auth/internal/repository"
 	"github.com/andredubov/auth/internal/service"
-	"github.com/andredubov/auth/pkg/hasher"
+	"github.com/andredubov/golibs/pkg/client/database"
+	"github.com/andredubov/golibs/pkg/hasher"
 )
 
 type usersService struct {
 	usersRepository repository.Users
 	hasher          hasher.PasswordHasher
+	usersCache      cache.Users
 	txManager       database.TxManager
 }
 
@@ -17,11 +19,13 @@ type usersService struct {
 func NewService(
 	usersRepository repository.Users,
 	hasher hasher.PasswordHasher,
+	usersCache cache.Users,
 	txManager database.TxManager,
 ) service.Users {
 	return &usersService{
-		usersRepository,
-		hasher,
-		txManager,
+		usersRepository: usersRepository,
+		hasher:          hasher,
+		usersCache:      usersCache,
+		txManager:       txManager,
 	}
 }
