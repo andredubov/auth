@@ -7,6 +7,7 @@ require (
 	github.com/andredubov/golibs v0.0.0-20240815170544-239ff8d7b24d
 	github.com/brianvoe/gofakeit/v6 v6.28.0
 	github.com/dvln/testify v0.0.0-20161024040450-c9680faee19e
+	github.com/envoyproxy/protoc-gen-validate v1.0.4
 	github.com/gojuno/minimock/v3 v3.3.14
 	github.com/golang/protobuf v1.5.4
 	github.com/gomodule/redigo v1.9.2
@@ -34,7 +35,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/net v0.26.0 // indirect
+	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117 // indirect

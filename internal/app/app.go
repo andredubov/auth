@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/andredubov/auth/internal/interceptor"
 	auth_v1 "github.com/andredubov/auth/pkg/auth/v1"
 	"github.com/andredubov/golibs/pkg/closer"
 	"github.com/andredubov/golibs/pkg/config"
@@ -74,6 +75,7 @@ func (a *App) initServiceProvider(_ context.Context) error {
 func (a *App) initGRPCServer(ctx context.Context) error {
 	opts := []grpc.ServerOption{
 		grpc.Creds(insecure.NewCredentials()),
+		grpc.UnaryInterceptor(interceptor.ValidateInterceptor),
 	}
 
 	a.grpcServer = grpc.NewServer(opts...)
