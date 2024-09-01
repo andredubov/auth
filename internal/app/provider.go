@@ -27,6 +27,7 @@ type serviceProvider struct {
 	authConfig           config.AuthConfing
 	grpcConfig           config.GRPCConfig
 	redisConfig          config.RedisConfig
+	httpConfig           config.HTTPConfig
 	passwordHasher       hasher.PasswordHasher
 	databaseClient       database.Client
 	databaseTxManager    database.TxManager
@@ -82,7 +83,7 @@ func (s *serviceProvider) RedisConfig() config.RedisConfig {
 	return s.redisConfig
 }
 
-// GRPCConfig loads grpc config from appropriate enviroment variables
+// GRPCConfig loads grpc server config from appropriate enviroment variables
 func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
 		cfg, err := env.NewGRPCConfig()
@@ -94,6 +95,20 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	}
 
 	return s.grpcConfig
+}
+
+// HTTPConfig loads http server config from appropriate enviroment variables
+func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
+	if s.httpConfig == nil {
+		cfg, err := env.NewHTTPConfig()
+		if err != nil {
+			log.Fatalf("failed to get http config: %s", err.Error())
+		}
+
+		s.httpConfig = cfg
+	}
+
+	return s.httpConfig
 }
 
 // PasswordHasher creates an instance of password hasher
