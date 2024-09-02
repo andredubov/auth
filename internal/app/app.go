@@ -132,9 +132,9 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 	})
 
 	a.httpServer = &http.Server{
-		Addr:    a.serviceProvider.HTTPConfig().Address(),
-		Handler: corsMiddleware.Handler(mux),
-		//ReadHeaderTimeout: a.serviceProvider.HTTPConfig().ReadHeaderTimeout(),
+		Addr:              a.serviceProvider.HTTPConfig().Address(),
+		Handler:           corsMiddleware.Handler(mux),
+		ReadHeaderTimeout: a.serviceProvider.HTTPConfig().ReadHeaderTimeout(),
 	}
 
 	return nil

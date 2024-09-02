@@ -48,6 +48,7 @@ services:
       - ./config/.env
     ports:
       - ${GRPC_PORT}:${GRPC_PORT}
+      - ${HTTP_PORT}:${HTTP_PORT}
     depends_on:
       auth-postgres:
         condition: service_healthy
