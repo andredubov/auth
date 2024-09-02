@@ -132,6 +132,9 @@ jobs:
             echo "RD_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }}" >> ./auth/config/.env
             echo "RD_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }}" >> ./auth/config/.env
             echo "RD_MAX_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_MAX_IDLE_TIMEOUT_SEC }}" >> ./auth/config/.env
+            echo "HTTP_HOST=${{ secrets.HTTP_HOST }}" >> ./auth/config/.env
+            echo "HTTP_PORT=${{ secrets.HTTP_PORT }}" >> ./auth/config/.env
+            echo "HTTP_READ_HEADER_TIMEOUT_SEC=${{ secrets.HTTP_READ_HEADER_TIMEOUT_SEC }}" >> ./auth/config/.env
 
             # Login into DockerHub
             # echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
