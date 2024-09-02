@@ -49,6 +49,7 @@ services:
     ports:
       - ${GRPC_PORT}:${GRPC_PORT}
       - ${HTTP_PORT}:${HTTP_PORT}
+      - ${SWGR_PORT}:${SWGR_PORT}
     depends_on:
       auth-postgres:
         condition: service_healthy

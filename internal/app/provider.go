@@ -28,6 +28,7 @@ type serviceProvider struct {
 	grpcConfig           config.GRPCConfig
 	redisConfig          config.RedisConfig
 	httpConfig           config.HTTPConfig
+	swaggerConfig        config.SwaggerConfig
 	passwordHasher       hasher.PasswordHasher
 	databaseClient       database.Client
 	databaseTxManager    database.TxManager
@@ -109,6 +110,20 @@ func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
 	}
 
 	return s.httpConfig
+}
+
+// SwaggerConfig loads swagger config from appropriate enviroment variables
+func (s *serviceProvider) SwaggerConfig() config.SwaggerConfig {
+	if s.swaggerConfig == nil {
+		cfg, err := env.NewSwaggerConfig()
+		if err != nil {
+			log.Fatalf("failed to get swagger config: %s", err.Error())
+		}
+
+		s.swaggerConfig = cfg
+	}
+
+	return s.swaggerConfig
 }
 
 // PasswordHasher creates an instance of password hasher

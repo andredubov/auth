@@ -4,7 +4,7 @@ go 1.22.5
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
-	github.com/andredubov/golibs v0.0.0-20240901192548-0358bedbbac0
+	github.com/andredubov/golibs v0.0.0-20240902121557-ded4e7068ebd
 	github.com/brianvoe/gofakeit/v6 v6.28.0
 	github.com/dvln/testify v0.0.0-20161024040450-c9680faee19e
 	github.com/envoyproxy/protoc-gen-validate v1.0.4
@@ -13,6 +13,7 @@ require (
 	github.com/gomodule/redigo v1.9.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0
 	github.com/jackc/pgx/v4 v4.18.3
+	github.com/rakyll/statik v0.1.7
 	github.com/rs/cors v1.11.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20240827150818-7e3bb234dfed
 	google.golang.org/grpc v1.66.0
