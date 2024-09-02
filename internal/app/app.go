@@ -19,6 +19,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
+	// comment for linter
 	_ "github.com/andredubov/auth/statik"
 )
 
