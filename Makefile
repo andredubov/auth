@@ -30,6 +30,7 @@ get-deps:
 
 generate:
 	mkdir -p pkg/swagger
+	make vendor-proto
 	make generate-auth-api
 	$(LOCAL_BIN)/statik -src=./pkg/swagger/ -include='*.css,*.html,*.js,*.json,*.png'
 
